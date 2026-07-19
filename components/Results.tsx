@@ -3,7 +3,12 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ZONES = ['Подмышки', 'Бикини', 'Ноги', 'Живот'];
+const ZONES = [
+  { label: 'Подмышки', slug: 'podymshki' },
+  { label: 'Бикини',   slug: 'bikini'    },
+  { label: 'Ноги',     slug: 'nogi'      },
+  { label: 'Живот',    slug: 'zhivot'    }
+];
 
 export default function Results() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -41,21 +46,30 @@ export default function Results() {
           ref={trackRef}
           className="flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {ZONES.map((zone) => (
+          {ZONES.map(({ label, slug }) => (
             <div
-              key={zone}
+              key={slug}
               className="snap-start shrink-0 w-[260px] sm:w-[290px] rounded-xl overflow-hidden bg-sand-100"
             >
               <div className="aspect-square w-full grid grid-cols-2">
-                <div className="bg-crimson-100 flex items-center justify-center text-[11px] text-crimson-600/70">
-                  До
+                <div className="relative overflow-hidden">
+                  <img
+                    src={`/images/results/${slug}-before.webp`}
+                    alt={`${label} — до`}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute bottom-1.5 left-2 text-[10px] font-semibold text-ink-900/60 bg-sand-50/80 rounded px-1">До</span>
                 </div>
-                <div className="bg-crimson-50 flex items-center justify-center text-[11px] text-crimson-600/70">
-                  После
+                <div className="relative overflow-hidden">
+                  <img
+                    src={`/images/results/${slug}-after.webp`}
+                    alt={`${label} — после`}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute bottom-1.5 right-2 text-[10px] font-semibold text-ink-900/60 bg-sand-50/80 rounded px-1">После</span>
                 </div>
-                {/* TODO: /public/images/results/{zone}-before.webp и -after.webp */}
               </div>
-              <p className="px-4 py-3 text-sm font-medium text-ink-900/80">{zone}</p>
+              <p className="px-4 py-3 text-sm font-medium text-ink-900/80">{label}</p>
             </div>
           ))}
         </div>

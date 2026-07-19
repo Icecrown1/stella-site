@@ -7,8 +7,8 @@ import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 // Садбарг, Манижа, Ангелина, Сурайё, Парвона
 const MASTERS = [
   { name: 'Муниса', experience: '3 года', reviews: 179, photo: '/images/master-munisa.webp' },
-  { name: 'Ҳоҷарбегим', experience: '4 года', reviews: 191, photo: null },
-  { name: 'Наргиза', experience: '4 года', reviews: 220, photo: null }
+  { name: 'Ҳоҷарбегим', experience: '4 года', reviews: 191, photo: '/images/master-khojarbegim.webp' },
+  { name: 'Наргиза', experience: '4 года', reviews: 220, photo: '/images/master-nargiza.webp' }
 ];
 
 export default function Masters() {

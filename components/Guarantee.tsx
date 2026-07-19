@@ -22,7 +22,7 @@ export default function Guarantee() {
 
           <div className="justify-self-center shrink-0">
             <img
-              src="/images/garantiya-stamp.png"
+              src="/images/garantiya-stamp.webp"
               alt="Гарантия гладкости"
               className="h-40 w-40 sm:h-48 sm:w-48 object-contain"
             />

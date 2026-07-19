@@ -95,8 +95,8 @@ export default function Footer() {
       <div className="container-page mt-12 pt-6 border-t border-sand-50/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-sand-50/40">
         <p>© STELLA, 2024–2025</p>
         <div className="flex gap-5">
-          <a href="#" className="hover:text-sand-50/70">Политика конфиденциальности</a>
-          <a href="#" className="hover:text-sand-50/70">Публичная оферта</a>
+          <a href="/privacy" className="hover:text-sand-50/70">Политика конфиденциальности</a>
+          <a href="/oferta" className="hover:text-sand-50/70">Публичная оферта</a>
         </div>
       </div>
     </footer>

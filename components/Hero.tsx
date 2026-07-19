@@ -57,7 +57,7 @@ export default function Hero() {
               className="absolute inset-0 w-full h-full object-cover object-top"
             />
             <svg
-              className="absolute -right-10 -bottom-10 opacity-30"
+              className="absolute -right-10 -top-10 opacity-30"
               width="220"
               height="220"
               viewBox="0 0 220 220"

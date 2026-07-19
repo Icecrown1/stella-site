@@ -6,16 +6,16 @@ const TABS = ['Зоны', 'Комплексы', 'STANDART / PREMIUM'] as const;
 type Tab = (typeof TABS)[number];
 
 const ZONES = [
-  { name: 'Бикини', price: 'от 160 сомони' },
-  { name: 'Подмышки', price: 'от 150 сомони' },
-  { name: 'Ноги полностью', price: 'от 250 сомони' },
-  { name: 'Лицо', price: 'от 75 сомони' }
+  { name: 'Бикини',         price: 'от 160 сомони', img: '/images/zones/zone-bikini.webp' },
+  { name: 'Подмышки',       price: 'от 150 сомони', img: '/images/zones/zone-podymshki.webp' },
+  { name: 'Ноги полностью', price: 'от 250 сомони', img: '/images/zones/zone-nogi.webp' },
+  { name: 'Лицо',           price: 'от 75 сомони',  img: '/images/zones/zone-lico.webp' }
 ];
 
 const COMPLEXES = [
-  { name: 'Бикини + подмышки', price: 'от 260 сомони' },
-  { name: 'Ноги + бикини', price: 'от 310 сомони' },
-  { name: 'Всё тело', price: 'от 500 сомони' }
+  { name: 'Бикини + подмышки', price: 'от 260 сомони', img: '/images/zones/complex-bikini-podymshki.webp' },
+  { name: 'Ноги + бикини',     price: 'от 310 сомони', img: '/images/zones/complex-nogi-bikini.webp' },
+  { name: 'Всё тело',          price: 'от 500 сомони', img: '/images/zones/complex-vsyo-telo.webp' }
 ];
 
 const PLANS = [
@@ -114,10 +114,12 @@ export default function Pricing() {
   );
 }
 
-function ZoneCard({ name, price }: { name: string; price: string }) {
+function ZoneCard({ name, price, img }: { name: string; price: string; img: string }) {
   return (
     <div className="rounded-xl bg-sand-100 p-5 flex flex-col">
-      <div className="aspect-square w-full rounded-lg bg-crimson-50 mb-4" aria-hidden="true" />
+      <div className="aspect-square w-full rounded-lg overflow-hidden mb-4">
+        <img src={img} alt={name} className="w-full h-full object-cover" />
+      </div>
       <p className="font-medium text-ink-900">{name}</p>
       <p className="text-sm text-ink-900/60 mt-1">{price}</p>
       <a

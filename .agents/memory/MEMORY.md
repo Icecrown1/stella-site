@@ -1,0 +1,1 @@
+- [Dev styles break after build](dev-styles-after-build.md) — running `npm run build` leaves stale `.next` that conflicts with `next dev`; fix: `rm -rf .next` then restart workflow.

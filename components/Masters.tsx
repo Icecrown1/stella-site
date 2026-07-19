@@ -6,9 +6,9 @@ import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 // TODO: добавить остальных мастеров, когда будут стаж/отзывы:
 // Садбарг, Манижа, Ангелина, Сурайё, Парвона
 const MASTERS = [
-  { name: 'Муниса', experience: '3 года', reviews: 179 },
-  { name: 'Ҳоҷарбегим', experience: '4 года', reviews: 191 },
-  { name: 'Наргиза', experience: '4 года', reviews: 220 }
+  { name: 'Муниса', experience: '3 года', reviews: 179, photo: '/images/master-munisa.webp' },
+  { name: 'Ҳоҷарбегим', experience: '4 года', reviews: 191, photo: null },
+  { name: 'Наргиза', experience: '4 года', reviews: 220, photo: null }
 ];
 
 export default function Masters() {
@@ -49,7 +49,15 @@ export default function Masters() {
         >
           {MASTERS.map((m) => (
             <div key={m.name} className="snap-start shrink-0 w-[180px] text-center">
-              <div className="aspect-square w-full rounded-xl2 bg-sand-100 mb-3" aria-hidden="true" />
+              <div className="aspect-square w-full rounded-xl2 bg-sand-100 mb-3 overflow-hidden">
+                {m.photo && (
+                  <img
+                    src={m.photo}
+                    alt={`Мастер ${m.name}`}
+                    className="w-full h-full object-cover object-top"
+                  />
+                )}
+              </div>
               <p className="font-medium text-ink-900">{m.name}</p>
               <p className="text-xs text-ink-900/50">Опыт {m.experience}</p>
               <p className="flex items-center justify-center gap-1 text-xs text-ink-900/70 mt-1">

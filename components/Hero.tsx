@@ -51,14 +51,11 @@ export default function Hero() {
 
         <div className="relative">
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl2 bg-crimson-600">
-            {/* TODO: заменить на реальное фото модели, /public/images/hero-model.webp */}
-            <div className="absolute inset-0 flex items-center justify-center text-center px-8">
-              <p className="text-sand-100/70 text-sm">
-                Фото модели · placeholder
-                <br />
-                hero-model.webp, 900×1125
-              </p>
-            </div>
+            <img
+              src="/images/hero-model.webp"
+              alt="Модель студии лазерной эпиляции STELLA"
+              className="absolute inset-0 w-full h-full object-cover object-top"
+            />
             <svg
               className="absolute -right-10 -bottom-10 opacity-30"
               width="220"

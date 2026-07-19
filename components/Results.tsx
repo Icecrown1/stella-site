@@ -7,7 +7,7 @@ const ZONES = [
   { label: 'Подмышки', slug: 'podymshki' },
   { label: 'Бикини',   slug: 'bikini'    },
   { label: 'Ноги',     slug: 'nogi'      },
-  { label: 'Живот',    slug: 'zhivot'    }
+  { label: 'Руки',     slug: 'ruki'      }
 ];
 
 export default function Results() {

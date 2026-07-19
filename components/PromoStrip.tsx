@@ -4,7 +4,11 @@ export default function PromoStrip() {
       <div className="container-page">
         <div className="grid sm:grid-cols-[1fr,1.4fr,auto] items-center gap-6 rounded-xl2 bg-sand-50 py-6 px-6 sm:px-8">
           <div className="hidden sm:block aspect-[4/3] w-full overflow-hidden rounded-xl bg-crimson-100">
-            {/* TODO: /public/images/promo-hands.webp */}
+            <img
+              src="/images/promo-hands.webp"
+              alt="Гладкая кожа — результат лазерной эпиляции STELLA"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <p className="font-display font-bold text-xl sm:text-2xl text-ink-900">

@@ -21,63 +21,14 @@ export default function Guarantee() {
           </div>
 
           <div className="justify-self-center shrink-0">
-            <GuaranteeBadge />
+            <img
+              src="/images/garantiya-stamp.png"
+              alt="Гарантия гладкости"
+              className="h-40 w-40 sm:h-48 sm:w-48 object-contain"
+            />
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function GuaranteeBadge() {
-  const text = 'ГАРАНТИЯ ГЛАДКОСТИ • ГАРАНТИЯ ГЛАДКОСТИ • ';
-  const chars = text.split('');
-  const radius = 68;
-
-  return (
-    <div className="relative h-40 w-40 sm:h-48 sm:w-48" aria-hidden="true">
-      <svg
-        className="absolute inset-0 h-full w-full animate-[spin_18s_linear_infinite] motion-reduce:animate-none"
-        viewBox="0 0 160 160"
-      >
-        <circle
-          cx="80"
-          cy="80"
-          r={radius}
-          fill="none"
-          stroke="#A81530"
-          strokeOpacity="0.35"
-          strokeWidth="1"
-          strokeDasharray="3 5"
-        />
-        <text fill="#A81530" fontSize="9.5" fontWeight="600" letterSpacing="1.5">
-          <textPath href="#badge-circle" startOffset="0%">
-            {chars.map((c, i) => (
-              <tspan key={i}>{c}</tspan>
-            ))}
-          </textPath>
-        </text>
-        <defs>
-          <path
-            id="badge-circle"
-            d={`M 80 ${80 - radius} A ${radius} ${radius} 0 1 1 ${80 - 0.01} ${
-              80 - radius
-            }`}
-            fill="none"
-          />
-        </defs>
-      </svg>
-
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-full border border-crimson-500/40 bg-sand-50">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M12 2 L14 9 L21 9 L15.5 13.5 L17.5 21 L12 16.5 L6.5 21 L8.5 13.5 L3 9 L10 9 Z"
-              fill="#A81530"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
   );
 }

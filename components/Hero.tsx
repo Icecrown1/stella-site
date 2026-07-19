@@ -56,18 +56,7 @@ export default function Hero() {
               alt="Модель студии лазерной эпиляции STELLA"
               className="absolute inset-0 w-full h-full object-cover object-top"
             />
-            <svg
-              className="absolute -right-10 -top-10 opacity-30"
-              width="220"
-              height="220"
-              viewBox="0 0 220 220"
-              aria-hidden="true"
-            >
-              <path
-                d="M110 0 L130 90 L220 110 L130 130 L110 220 L90 130 L0 110 L90 90 Z"
-                fill="#FBF3E7"
-              />
-            </svg>
+
           </div>
         </div>
       </div>

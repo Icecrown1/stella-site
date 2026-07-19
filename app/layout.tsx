@@ -15,9 +15,36 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: 'STELLA — лазерная эпиляция в Душанбе и Худжанде с Гарантией результата',
+  title: 'STELLA — лазерная эпиляция в Душанбе и Худжанде',
   description:
-    'Лазерная эпиляция в Душанбе и Худжанде. Первая процедура — 100 сомони. Гарантия гладкости, все мастера — женщины, приватность и деликатность.'
+    'Лазерная эпиляция с Гарантией результата. Первая процедура — 100 сомони. Все мастера — женщины, приватность и деликатность. Студии в Душанбе и Худжанде.',
+  alternates: {
+    canonical: 'https://stella-tj.com/',
+  },
+  openGraph: {
+    title: 'STELLA — лазерная эпиляция в Душанбе и Худжанде',
+    description:
+      'Лазерная эпиляция с Гарантией результата. Первая процедура — 100 сомони. Все мастера — женщины.',
+    url: 'https://stella-tj.com',
+    siteName: 'STELLA',
+    locale: 'ru_TJ',
+    type: 'website',
+    images: [
+      {
+        url: 'https://stella-tj.com/images/og-cover.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'STELLA — студия лазерной эпиляции в Душанбе и Худжанде',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'STELLA — лазерная эпиляция в Душанбе и Худжанде',
+    description:
+      'Лазерная эпиляция с Гарантией результата. Первая процедура — 100 сомони.',
+    images: ['https://stella-tj.com/images/og-cover.jpg'],
+  },
 };
 
 export default function RootLayout({

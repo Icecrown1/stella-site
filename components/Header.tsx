@@ -53,6 +53,8 @@ export default function Header() {
           <a
             href="https://wa.me/message/CYJT333P3IPBG1"
             aria-label="Написать в WhatsApp"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-crimson-500/30 text-crimson-500 hover:bg-crimson-500 hover:text-sand-50 transition-colors"
           >
             <MessageCircle size={18} aria-hidden="true" />

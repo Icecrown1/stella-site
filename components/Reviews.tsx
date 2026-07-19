@@ -92,9 +92,9 @@ export default function Reviews() {
                   <p className="text-xs text-ink-900/50">{r.city}</p>
                 </div>
               </div>
-              <div className="flex gap-0.5 mb-2" aria-hidden="true">
+              <div className="flex gap-0.5 mb-2" role="img" aria-label="5 из 5 звёзд">
                 {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} size={13} className="fill-crimson-500 text-crimson-500" />
+                  <Star key={j} size={13} className="fill-crimson-500 text-crimson-500" aria-hidden="true" />
                 ))}
               </div>
               <p className="text-sm text-ink-900/75 leading-relaxed">{r.text}</p>

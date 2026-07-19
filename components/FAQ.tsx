@@ -55,9 +55,9 @@ export default function FAQ() {
                     {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                   </span>
                 </button>
-                {isOpen && (
-                  <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">{item.a}</p>
-                )}
+                <p className={`mt-3 text-sm text-ink-900/70 leading-relaxed ${isOpen ? 'block' : 'hidden'}`}>
+                  {item.a}
+                </p>
               </div>
             );
           })}

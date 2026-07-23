@@ -6,10 +6,10 @@ const TABS = ['Зоны', 'Комплексы', 'STANDART / PREMIUM'] as const;
 type Tab = (typeof TABS)[number];
 
 const ZONES = [
-  { name: 'Бикини',         price: 'от 160 сомони', img: '/images/zones/zone-bikini.webp' },
-  { name: 'Подмышки',       price: 'от 150 сомони', img: '/images/zones/zone-podymshki.webp' },
-  { name: 'Ноги полностью', price: 'от 250 сомони', img: '/images/zones/zone-nogi.webp' },
-  { name: 'Лицо',           price: 'от 75 сомони',  img: '/images/zones/zone-lico.webp' }
+  { name: 'Бикини',         price: 'от 160 сомони', img: '/images/zones/zone-bikini.webp', slug: 'bikini' },
+  { name: 'Подмышки',       price: 'от 150 сомони', img: '/images/zones/zone-podymshki.webp', slug: 'podmyshki' },
+  { name: 'Ноги полностью', price: 'от 250 сомони', img: '/images/zones/zone-nogi.webp', slug: 'nogi' },
+  { name: 'Лицо',           price: 'от 75 сомони',  img: '/images/zones/zone-lico.webp', slug: 'lico' }
 ];
 
 const COMPLEXES = [
@@ -64,7 +64,7 @@ export default function Pricing() {
         {tab === 'Зоны' && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {ZONES.map((z) => (
-              <ZoneCard key={z.name} {...z} />
+              <ZoneCard key={z.name} name={z.name} price={z.price} img={z.img} href={`/uslugi/${z.slug}`} />
             ))}
           </div>
         )}
@@ -72,7 +72,7 @@ export default function Pricing() {
         {tab === 'Комплексы' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {COMPLEXES.map((z) => (
-              <ZoneCard key={z.name} {...z} />
+              <ZoneCard key={z.name} name={z.name} price={z.price} img={z.img} href="/uslugi/kompleksy" />
             ))}
           </div>
         )}
@@ -114,7 +114,7 @@ export default function Pricing() {
   );
 }
 
-function ZoneCard({ name, price, img }: { name: string; price: string; img: string }) {
+function ZoneCard({ name, price, img, href }: { name: string; price: string; img: string; href: string }) {
   return (
     <div className="rounded-xl bg-sand-100 p-5 flex flex-col">
       <div className="aspect-square w-full rounded-lg overflow-hidden mb-4">
@@ -123,7 +123,7 @@ function ZoneCard({ name, price, img }: { name: string; price: string; img: stri
       <p className="font-medium text-ink-900">{name}</p>
       <p className="text-sm text-ink-900/60 mt-1">{price}</p>
       <a
-        href="#zapis"
+        href={href}
         className="mt-4 text-center rounded-full border border-crimson-500/30 text-crimson-500 text-sm font-medium py-2 hover:bg-crimson-500 hover:text-sand-50 transition-colors"
       >
         Подробнее

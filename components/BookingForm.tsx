@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function BookingForm() {
+export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,11 +85,12 @@ export default function BookingForm() {
               <select
                 id="zone"
                 name="zone"
+                defaultValue={defaultZone ?? 'Бикини'}
                 className="mt-1.5 w-full rounded-lg border border-ink-900/15 bg-sand-100/60 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-crimson-500"
               >
                 <option>Бикини</option>
                 <option>Подмышки</option>
-                <option>Ноги</option>
+                <option>Ноги полностью</option>
                 <option>Лицо</option>
                 <option>Другое / уточню у администратора</option>
               </select>

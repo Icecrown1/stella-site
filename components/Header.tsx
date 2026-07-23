@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Услуги', href: '#uslugi' },
-  { label: 'Цены', href: '#tseny' },
-  { label: 'Косметологи', href: '#kosmetologi' },
-  { label: 'Студии', href: '#studii' },
-  { label: 'Отзывы', href: '#otzyvy' },
-  { label: 'Контакты', href: '#kontakty' }
+  { label: 'Услуги', href: '/uslugi' },
+  { label: 'Цены', href: '/#tseny' },
+  { label: 'Косметологи', href: '/#kosmetologi' },
+  { label: 'Студии', href: '/#studii' },
+  { label: 'Отзывы', href: '/#otzyvy' },
+  { label: 'Контакты', href: '/#kontakty' }
 ];
 
 export default function Header() {
@@ -28,7 +28,7 @@ export default function Header() {
       }`}
     >
       <div className="container-page flex items-center justify-between py-4">
-        <a href="#top" className="flex flex-col leading-none">
+        <a href="/" className="flex flex-col leading-none">
           <span className="font-display font-extrabold text-2xl tracking-tight text-crimson-500">
             STELLA
           </span>
@@ -60,7 +60,7 @@ export default function Header() {
             <MessageCircle size={18} aria-hidden="true" />
           </a>
           <a
-            href="#zapis"
+            href="/#zapis"
             className="rounded-full bg-crimson-500 px-5 py-2.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
           >
             Записаться

@@ -78,13 +78,13 @@ export default function Footer() {
         <div>
           <p className="text-sm font-semibold text-sand-50 mb-4">Меню</p>
           <ul className="space-y-2 text-sm mb-6">
-            <li><a href="#uslugi" className="hover:text-sand-50">Услуги</a></li>
-            <li><a href="#tseny" className="hover:text-sand-50">Курсы и цены</a></li>
-            <li><a href="#kosmetologi" className="hover:text-sand-50">Косметологи</a></li>
-            <li><a href="#otzyvy" className="hover:text-sand-50">Отзывы</a></li>
+            <li><a href="/uslugi" className="hover:text-sand-50">Услуги</a></li>
+            <li><a href="/#tseny" className="hover:text-sand-50">Курсы и цены</a></li>
+            <li><a href="/#kosmetologi" className="hover:text-sand-50">Косметологи</a></li>
+            <li><a href="/#otzyvy" className="hover:text-sand-50">Отзывы</a></li>
           </ul>
           <a
-            href="#zapis"
+            href="/#zapis"
             className="block text-center rounded-full bg-crimson-500 px-5 py-2.5 text-sm font-semibold text-sand-50 hover:bg-crimson-400 transition-colors"
           >
             Записаться
@@ -92,7 +92,15 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container-page mt-12 pt-6 border-t border-sand-50/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-sand-50/40">
+      <div className="container-page mt-10 pt-6 border-t border-sand-50/10 flex flex-wrap gap-x-5 gap-y-2 text-xs text-sand-50/50">
+        <a href="/uslugi/bikini" className="hover:text-sand-50/80">Бикини</a>
+        <a href="/uslugi/podmyshki" className="hover:text-sand-50/80">Подмышки</a>
+        <a href="/uslugi/nogi" className="hover:text-sand-50/80">Ноги полностью</a>
+        <a href="/uslugi/lico" className="hover:text-sand-50/80">Лицо</a>
+        <a href="/uslugi/kompleksy" className="hover:text-sand-50/80">Комплексы зон</a>
+      </div>
+
+      <div className="container-page mt-6 pt-6 border-t border-sand-50/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-sand-50/40">
         <p>© STELLA, 2024–2025</p>
         <div className="flex gap-5">
           <a href="/privacy" className="hover:text-sand-50/70">Политика конфиденциальности</a>

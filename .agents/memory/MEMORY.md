@@ -1,1 +1,3 @@
 - [Dev styles break after build](dev-styles-after-build.md) — running `npm run build` leaves stale `.next` that conflicts with `next dev`; fix: `rm -rf .next` then restart workflow.
+- [layout.tsx wipe risk](layout-wipe-risk.md) — layout.tsx can get silently reset to bare Next.js default, losing globals.css import and all metadata; check if styles vanish unexpectedly.
+- [allowedDevOrigins wildcard broken](allowed-dev-origins.md) — plain `'*'` in allowedDevOrigins does NOT work as wildcard; must use explicit patterns like `*.worf.replit.dev`.

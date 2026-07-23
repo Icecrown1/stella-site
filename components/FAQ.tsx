@@ -33,8 +33,26 @@ const QUESTIONS = [
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: QUESTIONS.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a
+      }
+    }))
+  };
+
   return (
     <section className="bg-sand-50 py-14">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="container-page">
         <h2 className="font-display font-bold text-2xl sm:text-3xl text-ink-900 mb-8">
           Ответы на частые вопросы
@@ -55,9 +73,9 @@ export default function FAQ() {
                     {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                   </span>
                 </button>
-                <p className={`mt-3 text-sm text-ink-900/70 leading-relaxed ${isOpen ? 'block' : 'hidden'}`}>
-                  {item.a}
-                </p>
+                {isOpen && (
+                  <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">{item.a}</p>
+                )}
               </div>
             );
           })}

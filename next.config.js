@@ -4,7 +4,13 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  allowedDevOrigins: ['*']
+  allowedDevOrigins: [
+    '*.replit.dev',
+    '*.worf.replit.dev',
+    '*.repl.co',
+    '*.replit.app',
+    '127.0.0.1',
+  ]
 };
 
 module.exports = nextConfig;

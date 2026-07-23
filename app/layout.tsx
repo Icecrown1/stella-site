@@ -15,6 +15,7 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://laserstella.com"),
   title: "STELLA — лазерная эпиляция в Душанбе и Худжанде",
   description:
     "Лазерная эпиляция с Гарантией результата. Первая процедура — 100 сомони. Все мастера — женщины, приватность и деликатность. Студии в Душанбе и Худжанде.",

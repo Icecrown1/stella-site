@@ -11,43 +11,109 @@ import BookingForm from "@/components/BookingForm";
 import Footer from "@/components/Footer";
 
 // ── JSON-LD structured data ──────────────────────────────────────────────────
+//
+// ВАЖНО: адреса студий продублированы из components/Footer.tsx, а цены —
+// из components/Pricing.tsx. Если меняешь адрес/цену в одном месте —
+// обнови и здесь, иначе schema разойдётся с видимым контентом страницы.
 
-const localBusinessSchema = {
+const SITE_URL = "https://laserstella.com";
+
+const organizationSchema = {
   "@context": "https://schema.org",
-  "@type": "BeautySalon",
-  name: "STELLA",
-  description:
-    "Студия лазерной эпиляции в Душанбе и Худжанде. Только женщины-мастера. Гарантия гладкости.",
-  url: "https://laserstella.com",
-  priceRange: "от 75 сомони",
-  sameAs: ["https://www.instagram.com/stella_tajikistan"],
-  location: [
-    {
-      "@type": "PostalAddress",
-      streetAddress: "ул. Хусейнзода 29",
-      addressLocality: "Душанбе",
-      addressCountry: "TJ",
-    },
-    {
-      "@type": "PostalAddress",
-      streetAddress: "ул. Расулов 9/1",
-      addressLocality: "Душанбе",
-      addressCountry: "TJ",
-    },
-    {
-      "@type": "PostalAddress",
-      streetAddress: "ул. Завкибекова 10, клиника «Гиппократ»",
-      addressLocality: "Душанбе",
-      addressCountry: "TJ",
-    },
-    {
-      "@type": "PostalAddress",
-      streetAddress:
-        "проспект Р. Набиева, ЖК «Худжанд Сити», салон «Бурда», 2 этаж",
-      addressLocality: "Худжанд",
-      addressCountry: "TJ",
-    },
+  "@type": "Organization",
+  name: "STELLA — лазерная эпиляция",
+  // alternateName нужен, чтобы явно размежеваться в поиске с другим
+  // брендом "Stella" (кондитерский Instagram-аккаунт с тем же именем)
+  alternateName: [
+    "STELLA лазерная эпиляция",
+    "Стелла эпиляция Душанбе",
+    "Стелла эпиляция Худжанд",
   ],
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.png`,
+  sameAs: ["https://www.instagram.com/stella_tajikistan"],
+};
+
+type Studio = {
+  id: string;
+  city: string;
+  streetAddress: string;
+  description: string;
+};
+
+const STUDIOS: Studio[] = [
+  {
+    id: "dushanbe-huseynzoda",
+    city: "Душанбе",
+    streetAddress: "ул. Хусейнзода 29",
+    description:
+      "Студия лазерной эпиляции STELLA рядом с магазином Pari Beauty и рестораном «Оригами», Дом печати.",
+  },
+  {
+    id: "dushanbe-rasulov",
+    city: "Душанбе",
+    streetAddress: "ул. Расулов 9/1",
+    description:
+      "Студия лазерной эпиляции STELLA рядом с фабрикой «Ширин», Дом «Душанбе Сити», ресторан «Терасса».",
+  },
+  {
+    id: "dushanbe-zavkibekova",
+    city: "Душанбе",
+    streetAddress: "ул. Завкибекова, 10, клиника «Гиппократ»",
+    description:
+      "Студия лазерной эпиляции STELLA рядом со стадионом «Спартак», за лабораторией «Гемотест».",
+  },
+  {
+    id: "khujand-nabiev",
+    city: "Худжанд",
+    streetAddress: "проспект Р. Набиева, ЖК «Худжанд Сити», салон «Бурда», 2 этаж",
+    description: "Студия лазерной эпиляции STELLA рядом с ЗАГСом и Хукуматом.",
+  },
+];
+
+// Каждая студия — отдельная валидная сущность HealthAndBeautyBusiness
+// с полем address (а не несуществующим "location" со списком адресов).
+const studioSchemas = STUDIOS.map((studio) => ({
+  "@context": "https://schema.org",
+  "@type": "HealthAndBeautyBusiness",
+  "@id": `${SITE_URL}/#${studio.id}`,
+  name: "STELLA — лазерная эпиляция",
+  image: `${SITE_URL}/icon.png`,
+  url: SITE_URL,
+  priceRange: "от 75 сомони",
+  description: studio.description,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: studio.streetAddress,
+    addressLocality: studio.city,
+    addressCountry: "TJ",
+  },
+  areaServed: studio.city,
+  parentOrganization: {
+    "@type": "Organization",
+    name: "STELLA — лазерная эпиляция",
+  },
+}));
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "Лазерная эпиляция",
+  provider: {
+    "@type": "Organization",
+    name: "STELLA — лазерная эпиляция",
+  },
+  areaServed: ["Душанбе", "Худжанд"],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Зоны лазерной эпиляции",
+    itemListElement: [
+      { "@type": "Offer", name: "Бикини", price: "160", priceCurrency: "TJS" },
+      { "@type": "Offer", name: "Подмышки", price: "150", priceCurrency: "TJS" },
+      { "@type": "Offer", name: "Ноги полностью", price: "250", priceCurrency: "TJS" },
+      { "@type": "Offer", name: "Лицо", price: "75", priceCurrency: "TJS" },
+    ],
+  },
 };
 
 const faqSchema = {
@@ -109,38 +175,39 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "STELLA",
-  url: "https://stella-tj.com",
+  url: SITE_URL,
   publisher: {
     "@type": "Organization",
     name: "STELLA",
-    url: "https://stella-tj.com",
+    url: SITE_URL,
     logo: {
       "@type": "ImageObject",
-      url: "https://stella-tj.com/icon.png",
+      url: `${SITE_URL}/icon.png`,
     },
     sameAs: ["https://www.instagram.com/stella_tajikistan"],
   },
 };
+
+const allSchemas = [
+  organizationSchema,
+  ...studioSchemas,
+  serviceSchema,
+  faqSchema,
+  websiteSchema,
+];
 
 // ────────────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(localBusinessSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-      />
+      {allSchemas.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <main>
         <Header />
         <Hero />

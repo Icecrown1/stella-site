@@ -65,6 +65,7 @@ export default function Footer() {
             <li><a href="/#tseny" className="hover:text-sand-50">Курсы и цены</a></li>
             <li><a href="/#kosmetologi" className="hover:text-sand-50">Косметологи</a></li>
             <li><a href="/#otzyvy" className="hover:text-sand-50">Отзывы</a></li>
+            <li><a href="/blog" className="hover:text-sand-50">Блог</a></li>
           </ul>
           <a
             href="/#zapis"

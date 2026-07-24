@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { ZONES } from "@/lib/zones";
+import { POSTS } from "@/lib/posts";
 
 const SITE_URL = "https://laserstella.com";
 
@@ -9,6 +10,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.8,
+  }));
+
+  const blogPages: MetadataRoute.Sitemap = POSTS.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: post.publishedAt,
+    changeFrequency: "yearly",
+    priority: 0.6,
   }));
 
   return [
@@ -43,6 +51,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...blogPages,
     {
       url: `${SITE_URL}/privacy`,
       lastModified: new Date(),

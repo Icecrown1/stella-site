@@ -98,6 +98,14 @@ export default function ZonePage({ params }: { params: { slug: string } }) {
                 {zone.h1}
               </h1>
 
+              <div className="lg:hidden mt-6 aspect-[4/5] max-w-xs mx-auto rounded-xl2 overflow-hidden">
+                <img
+                  src={zone.photo}
+                  alt={zone.h1}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
               <div className="mt-4 flex flex-wrap items-center gap-4">
                 <span className="font-display font-bold text-2xl text-crimson-500">
                   {zone.price}

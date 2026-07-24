@@ -1,31 +1,9 @@
 import { Instagram, MessageCircle } from 'lucide-react';
+import { STUDIOS } from '@/lib/studios';
 
 const WHATSAPP_LINK = 'https://wa.me/message/CYJT333P3IPBG1';
 const INSTAGRAM_LINK =
   'https://www.instagram.com/stella_tajikistan?igsh=dm04c2cyY2RobDU3&utm_source=qr';
-
-const STUDIOS = [
-  {
-    city: 'Душанбе',
-    address: 'ул. Хусейнзода 29',
-    landmark: 'Ориентир: магазин Pari Beauty, ресторан «Оригами», Дом печати'
-  },
-  {
-    city: 'Душанбе',
-    address: 'ул. Расулов 9/1',
-    landmark: 'Ориентир: фабрика «Ширин», Дом «Душанбе Сити», ресторан «Терасса»'
-  },
-  {
-    city: 'Душанбе',
-    address: 'ул. Завкибекова, 10, клиника «Гиппократ»',
-    landmark: 'Ориентир: стадион «Спартак», за лабораторией «Гемотест»'
-  },
-  {
-    city: 'Худжанд',
-    address: 'проспект Р. Набиева, ЖК «Худжанд Сити», салон «Бурда», 2 этаж',
-    landmark: 'Ориентир: рядом с ЗАГСом и Хукуматом'
-  }
-];
 
 export default function Footer() {
   return (
@@ -65,9 +43,14 @@ export default function Footer() {
         <div className="lg:col-span-2">
           <p className="text-sm font-semibold text-sand-50 mb-4">Студии</p>
           <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
-            {STUDIOS.map((s, i) => (
-              <div key={i}>
-                <p className="font-medium text-sand-50">{s.city}</p>
+            {STUDIOS.map((s) => (
+              <div key={s.id}>
+                <a
+                  href={s.city === 'Душанбе' ? '/dushanbe' : '/hudzhand'}
+                  className="font-medium text-sand-50 hover:underline"
+                >
+                  {s.city}
+                </a>
                 <p className="text-sand-50/60">{s.address}</p>
                 <p className="text-sand-50/40 text-xs mt-0.5">{s.landmark}</p>
               </div>
@@ -90,14 +73,6 @@ export default function Footer() {
             Записаться
           </a>
         </div>
-      </div>
-
-      <div className="container-page mt-10 pt-6 border-t border-sand-50/10 flex flex-wrap gap-x-5 gap-y-2 text-xs text-sand-50/50">
-        <a href="/uslugi/bikini" className="hover:text-sand-50/80">Бикини</a>
-        <a href="/uslugi/podmyshki" className="hover:text-sand-50/80">Подмышки</a>
-        <a href="/uslugi/nogi" className="hover:text-sand-50/80">Ноги полностью</a>
-        <a href="/uslugi/lico" className="hover:text-sand-50/80">Лицо</a>
-        <a href="/uslugi/kompleksy" className="hover:text-sand-50/80">Комплексы зон</a>
       </div>
 
       <div className="container-page mt-6 pt-6 border-t border-sand-50/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-sand-50/40">

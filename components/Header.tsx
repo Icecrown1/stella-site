@@ -40,13 +40,13 @@ export default function Header() {
       }`}
     >
       <div className="container-page flex items-center justify-between py-4">
-        <a href="/" className="flex flex-col leading-none">
+        <a href="/" className="flex flex-col leading-none shrink-0 min-w-0">
           <img
             src="/images/logo-crimson.webp"
             alt="STELLA — студия лазерной эпиляции"
-            className="h-8 sm:h-9 w-auto"
+            className="h-6 sm:h-9 w-auto max-w-[130px] sm:max-w-none object-contain object-left"
           />
-          <span className="text-[10px] tracking-[0.2em] text-ink-900/60 uppercase mt-1">
+          <span className="hidden sm:block text-[10px] tracking-[0.2em] text-ink-900/60 uppercase mt-1 whitespace-nowrap">
             студия лазерной эпиляции
           </span>
         </a>
@@ -106,7 +106,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <a
             href="https://wa.me/message/CYJT333P3IPBG1"
             aria-label="Написать в WhatsApp"
@@ -118,7 +118,7 @@ export default function Header() {
           </a>
           <a
             href="/#zapis"
-            className="rounded-full bg-crimson-500 px-4 py-2.5 sm:px-5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors whitespace-nowrap"
+            className="rounded-full bg-crimson-500 px-3.5 py-2 sm:px-5 sm:py-2.5 text-[13px] sm:text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors whitespace-nowrap"
           >
             Записаться
           </a>
@@ -149,7 +149,7 @@ export default function Header() {
               <img
                 src="/images/logo-crimson.webp"
                 alt="STELLA"
-                className="h-8 w-auto"
+                className="h-6 w-auto max-w-[130px] object-contain object-left"
               />
             </a>
             <button

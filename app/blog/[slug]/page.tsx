@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BookingForm from '@/components/BookingForm';
+import PhotoPlaceholder from '@/components/PhotoPlaceholder';
 import { POSTS, getPostBySlug } from '@/lib/posts';
 import { getZoneBySlug } from '@/lib/zones';
 
@@ -101,6 +102,33 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </h1>
             <p className="mt-3 text-sm text-ink-900/50">{post.readMinutes} мин чтения</p>
 
+            {post.coverImage && (
+              <div className="mt-6">
+                {post.coverImage.photo ? (
+                  <div
+                    className={`w-full rounded-xl2 overflow-hidden ${
+                      post.coverImage.aspect === 'square'
+                        ? 'aspect-square max-w-sm mx-auto'
+                        : post.coverImage.aspect === 'portrait'
+                        ? 'aspect-[4/5] max-w-xs mx-auto'
+                        : 'aspect-video'
+                    }`}
+                  >
+                    <img
+                      src={post.coverImage.photo}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <PhotoPlaceholder
+                    note={post.coverImage.placeholderNote}
+                    aspect={post.coverImage.aspect}
+                  />
+                )}
+              </div>
+            )}
+
             <div className="mt-8 space-y-6">
               {post.sections.map((section, i) => (
                 <div key={i}>
@@ -114,6 +142,32 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                       {p}
                     </p>
                   ))}
+                  {section.image && (
+                    <div className="my-4">
+                      {section.image.photo ? (
+                        <div
+                          className={`w-full rounded-xl2 overflow-hidden ${
+                            section.image.aspect === 'square'
+                              ? 'aspect-square max-w-sm mx-auto'
+                              : section.image.aspect === 'portrait'
+                              ? 'aspect-[4/5] max-w-xs mx-auto'
+                              : 'aspect-video'
+                          }`}
+                        >
+                          <img
+                            src={section.image.photo}
+                            alt={section.heading ?? post.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <PhotoPlaceholder
+                          note={section.image.placeholderNote}
+                          aspect={section.image.aspect}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

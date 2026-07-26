@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PhotoPlaceholder from '@/components/PhotoPlaceholder';
 import { POSTS } from '@/lib/posts';
 
 const SITE_URL = 'https://laserstella.com';
@@ -31,15 +32,28 @@ export default function BlogPage() {
               <a
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="block rounded-xl2 bg-sand-100 p-6 hover:bg-sand-200 transition-colors"
+                className="flex gap-4 rounded-xl2 bg-sand-100 p-4 sm:p-6 hover:bg-sand-200 transition-colors"
               >
-                <p className="font-display font-semibold text-lg text-ink-900">
-                  {post.title}
-                </p>
-                <p className="text-sm text-ink-900/60 mt-2">{post.excerpt}</p>
-                <p className="text-xs text-ink-900/40 mt-3">
-                  {post.readMinutes} мин чтения
-                </p>
+                <div className="hidden sm:block w-32 shrink-0 rounded-xl overflow-hidden">
+                  {post.coverImage?.photo ? (
+                    <img
+                      src={post.coverImage.photo}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <PhotoPlaceholder note="" aspect="square" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-display font-semibold text-lg text-ink-900">
+                    {post.title}
+                  </p>
+                  <p className="text-sm text-ink-900/60 mt-2">{post.excerpt}</p>
+                  <p className="text-xs text-ink-900/40 mt-3">
+                    {post.readMinutes} мин чтения
+                  </p>
+                </div>
               </a>
             ))}
           </div>

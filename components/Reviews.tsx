@@ -4,6 +4,26 @@ import { useRef } from 'react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { REVIEWS } from '@/lib/reviews';
 
+function Avatar({ name, avatar }: { name: string; avatar?: string }) {
+  if (avatar) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        className="h-10 w-10 rounded-full object-cover shrink-0"
+      />
+    );
+  }
+  return (
+    <div
+      aria-hidden="true"
+      className="h-10 w-10 rounded-full bg-crimson-100 text-crimson-600 flex items-center justify-center font-display font-semibold shrink-0"
+    >
+      {name.charAt(0)}
+    </div>
+  );
+}
+
 export default function Reviews() {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -46,25 +66,19 @@ export default function Reviews() {
               className="snap-start shrink-0 w-[280px] sm:w-[320px] rounded-xl2 bg-sand-100 p-6"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="h-10 w-10 rounded-full bg-crimson-100 shrink-0 overflow-hidden">
-                  {r.avatar && (
-                    <img
-                      src={r.avatar}
-                      alt={r.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
+                <Avatar name={r.name} avatar={r.avatar} />
                 <div>
                   <p className="text-sm font-medium text-ink-900">{r.name}</p>
                   <p className="text-xs text-ink-900/50">{r.city}</p>
                 </div>
               </div>
-              <div className="flex gap-0.5 mb-2" role="img" aria-label="5 из 5 звёзд">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} size={13} className="fill-crimson-500 text-crimson-500" aria-hidden="true" />
-                ))}
-              </div>
+              {r.rating && (
+                <div className="flex gap-0.5 mb-2" aria-label={`Оценка ${r.rating} из 5`}>
+                  {Array.from({ length: r.rating }).map((_, j) => (
+                    <Star key={j} size={13} className="fill-crimson-500 text-crimson-500" />
+                  ))}
+                </div>
+              )}
               <p className="text-sm text-ink-900/75 leading-relaxed">{r.text}</p>
             </div>
           ))}

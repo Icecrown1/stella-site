@@ -77,7 +77,13 @@ export default function DushanbePage() {
                     <div className="p-6">
                       <p className="font-medium text-ink-900">{s.address}</p>
                       <p className="text-sm text-ink-900/60 mt-2">{s.landmark}</p>
-                      <div className="mt-4 flex flex-wrap gap-3 text-sm">
+                      <a
+                        href={`/studii/${s.slug}`}
+                        className="mt-3 inline-block text-sm font-medium text-crimson-500 hover:underline"
+                      >
+                        Подробнее о студии →
+                      </a>
+                      <div className="mt-3 flex flex-wrap gap-3 text-sm">
                         <a
                           href={yandexHref}
                           target="_blank"

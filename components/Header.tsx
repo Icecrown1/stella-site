@@ -33,6 +33,7 @@ export default function Header() {
   }, [mobileOpen]);
 
   return (
+    <>
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         scrolled ? 'bg-sand-50/95 backdrop-blur shadow-sm' : 'bg-sand-50'
@@ -133,8 +134,13 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Мобильное меню на весь экран */}
-      {mobileOpen && (
+      
+    </header>
+
+    {/* Мобильное меню — вынесено ЗА пределы header: backdrop-blur на шапке
+        делает её containing block для fixed-потомков, из-за чего меню
+        схлопывалось при скролле. Снаружи header этот эффект не действует. */}
+    {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-[60] bg-sand-50 overflow-y-auto">
           <div className="container-page flex items-center justify-between py-4">
             <a href="/" className="flex flex-col leading-none" onClick={() => setMobileOpen(false)}>
@@ -229,6 +235,6 @@ export default function Header() {
           </nav>
         </div>
       )}
-    </header>
+    </>
   );
 }

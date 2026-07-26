@@ -4,6 +4,26 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import type { Review } from '@/lib/reviews';
 
+function Avatar({ name, avatar }: { name: string; avatar?: string }) {
+  if (avatar) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        className="h-10 w-10 rounded-full object-cover shrink-0"
+      />
+    );
+  }
+  return (
+    <div
+      aria-hidden="true"
+      className="h-10 w-10 rounded-full bg-crimson-100 text-crimson-600 flex items-center justify-center font-display font-semibold shrink-0"
+    >
+      {name.charAt(0)}
+    </div>
+  );
+}
+
 export default function CityReviews({
   reviews,
   cityLabel
@@ -53,18 +73,16 @@ export default function CityReviews({
             className="snap-start shrink-0 w-[260px] sm:w-[300px] rounded-xl2 bg-sand-100 p-6"
           >
             <div className="flex items-center gap-3 mb-3">
-              <img
-                src={r.avatar}
-                alt={r.name}
-                className="h-10 w-10 rounded-full object-cover shrink-0"
-              />
+              <Avatar name={r.name} avatar={r.avatar} />
               <p className="text-sm font-medium text-ink-900">{r.name}</p>
             </div>
-            <div className="flex gap-0.5 mb-2" aria-hidden="true">
-              {Array.from({ length: 5 }).map((_, j) => (
-                <Star key={j} size={12} className="fill-crimson-500 text-crimson-500" />
-              ))}
-            </div>
+            {r.rating && (
+              <div className="flex gap-0.5 mb-2" aria-label={`Оценка ${r.rating} из 5`}>
+                {Array.from({ length: r.rating }).map((_, j) => (
+                  <Star key={j} size={12} className="fill-crimson-500 text-crimson-500" />
+                ))}
+              </div>
+            )}
             <p className="text-sm text-ink-900/75 leading-relaxed">{r.text}</p>
           </div>
         ))}

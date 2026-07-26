@@ -1,9 +1,16 @@
 // Данные статей блога. Каждая секция — необязательный подзаголовок +
 // абзацы. Рендерится общим шаблоном app/blog/[slug]/page.tsx.
 
+export type PostImage = {
+  photo?: string; // путь к реальному фото, когда появится — например /images/blog/...
+  placeholderNote: string; // что за фото сюда нужно, для заглушки
+  aspect?: 'video' | 'square' | 'portrait';
+};
+
 export type PostSection = {
   heading?: string;
   paragraphs: string[];
+  image?: PostImage;
 };
 
 export type Post = {
@@ -14,6 +21,7 @@ export type Post = {
   excerpt: string;
   publishedAt: string; // ISO
   readMinutes: number;
+  coverImage?: PostImage;
   sections: PostSection[];
   relatedZoneSlugs?: string[];
 };
@@ -29,6 +37,11 @@ export const POSTS: Post[] = [
       'Это первый вопрос, который задают почти все клиентки. Разбираем без прикрас: что вы почувствуете и от чего это зависит.',
     publishedAt: '2026-07-20',
     readMinutes: 4,
+    coverImage: {
+      photo: '/images/blog/bolno-cover.webp',
+      placeholderNote: 'Мастер готовит аппарат над кожей клиентки, спокойная атмосфера кабинета',
+      aspect: 'video'
+    },
     sections: [
       {
         paragraphs: [
@@ -51,7 +64,12 @@ export const POSTS: Post[] = [
         heading: 'Зоны с разной чувствительностью',
         paragraphs: [
           'Не все участки тела одинаковы. Подмышки и ноги обычно переносятся легко — там кожа менее чувствительна. Зона бикини и лицо более деликатные — там мастер и работает мягче, подбирая щадящие настройки мощности индивидуально.'
-        ]
+        ],
+        image: {
+          photo: '/images/blog/bolno-zony.webp',
+          placeholderNote: 'Коллаж или фото зон — бикини и подмышки рядом, для сравнения',
+          aspect: 'video'
+        }
       },
       {
         heading: 'Что делает процедуру комфортнее',
@@ -79,6 +97,11 @@ export const POSTS: Post[] = [
       'Универсального числа «на всех» не существует — но есть закономерности, которые помогают спланировать курс осознанно.',
     publishedAt: '2026-07-21',
     readMinutes: 4,
+    coverImage: {
+      photo: '/images/blog/skolko-cover.webp',
+      placeholderNote: 'Фото до/после курса — крупный план гладкой кожи',
+      aspect: 'video'
+    },
     sections: [
       {
         paragraphs: [
@@ -96,7 +119,12 @@ export const POSTS: Post[] = [
         heading: 'Ориентировочное количество по зонам',
         paragraphs: [
           'В среднем на большинство зон приходится 7–10 процедур с интервалом в несколько недель между визитами — интервал нужен, чтобы захватить волосы, которые перешли в активную фазу роста уже после предыдущей процедуры. Точные ориентиры по каждой зоне — на страницах услуг: бикини, подмышки, ноги и лицо у нас на сайте расписаны отдельно, с учётом особенностей именно этой зоны.'
-        ]
+        ],
+        image: {
+          photo: '/images/blog/skolko-kurs.webp',
+          placeholderNote: 'Инфографика или фото-таймлайн курса процедур по неделям',
+          aspect: 'video'
+        }
       },
       {
         heading: 'Почему в STELLA курс — это 9 процедур',
@@ -123,6 +151,11 @@ export const POSTS: Post[] = [
       'Наша фирменная гарантия — это не просто рекламная фраза. Разбираем, что именно она покрывает, а что нет.',
     publishedAt: '2026-07-22',
     readMinutes: 5,
+    coverImage: {
+      photo: '/images/garantiya-stamp.webp',
+      placeholderNote: 'Печать «Гарантия гладкости»',
+      aspect: 'square'
+    },
     sections: [
       {
         paragraphs: [
@@ -158,7 +191,12 @@ export const POSTS: Post[] = [
         heading: 'Как оформляется гарантия',
         paragraphs: [
           'Перед стартом курса на 9 процедур мы заводим гарантийную карту клиентки и подписываем гарантийное соглашение — там прописаны все условия из этой статьи простым языком, плюс контрольные фото прогресса, чтобы результат оценивался объективно, а не «на глаз».'
-        ]
+        ],
+        image: {
+          photo: '/images/blog/garantiya-karta.webp',
+          placeholderNote: 'Фото гарантийной карты клиентки или момента подписания соглашения',
+          aspect: 'video'
+        }
       }
     ],
     relatedZoneSlugs: ['bikini']
@@ -173,6 +211,11 @@ export const POSTS: Post[] = [
       'Один из самых частых вопросов от наших клиенток — и мы отвечаем на него открыто, без готовых «разрешено» или «запрещено».',
     publishedAt: '2026-07-23',
     readMinutes: 4,
+    coverImage: {
+      photo: '/images/blog/islam-cover.webp',
+      placeholderNote: 'Нейтральное фото интерьера студии — приватный кабинет, тёплый свет',
+      aspect: 'video'
+    },
     sections: [
       {
         paragraphs: [
@@ -189,7 +232,12 @@ export const POSTS: Post[] = [
         heading: 'Как это устроено в STELLA',
         paragraphs: [
           'Именно поэтому в STELLA принципиально работают только женщины-косметологи — во всех 4 студиях, без исключений. Процедура проходит в закрытом кабинете, наедине с мастером, без посторонних. Степень открытости зоны при процедуре — это всегда ваш выбор и обсуждается индивидуально с мастером; вы не обязаны открывать больше, чем вам комфортно.'
-        ]
+        ],
+        image: {
+          photo: '/images/blog/islam-master.webp',
+          placeholderNote: 'Фото мастера-женщины за работой — можно руки/процесс, без необходимости лица',
+          aspect: 'video'
+        }
       },
       {
         heading: 'Что мы рекомендуем',

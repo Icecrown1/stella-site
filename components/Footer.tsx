@@ -51,7 +51,9 @@ export default function Footer() {
                 >
                   {s.city}
                 </a>
-                <p className="text-sand-50/60">{s.address}</p>
+                <a href={`/studii/${s.slug}`} className="block text-sand-50/60 hover:text-sand-50/90">
+                  {s.address}
+                </a>
                 <p className="text-sand-50/40 text-xs mt-0.5">{s.landmark}</p>
               </div>
             ))}

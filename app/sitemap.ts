@@ -1,12 +1,20 @@
 import { MetadataRoute } from "next";
 import { ZONES } from "@/lib/zones";
 import { POSTS } from "@/lib/posts";
+import { STUDIOS } from "@/lib/studios";
 
 const SITE_URL = "https://laserstella.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const zonePages: MetadataRoute.Sitemap = ZONES.map((zone) => ({
     url: `${SITE_URL}/uslugi/${zone.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  const studioPages: MetadataRoute.Sitemap = STUDIOS.map((studio) => ({
+    url: `${SITE_URL}/studii/${studio.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.8,
@@ -58,6 +66,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     ...blogPages,
+    ...studioPages,
     {
       url: `${SITE_URL}/privacy`,
       lastModified: new Date(),

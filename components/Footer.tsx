@@ -10,8 +10,12 @@ export default function Footer() {
     <footer id="studii" className="bg-ink-900 text-sand-50/80 py-14 scroll-mt-20">
       <div id="kontakty" className="container-page grid sm:grid-cols-2 lg:grid-cols-4 gap-10 scroll-mt-20">
         <div>
-          <p className="font-display font-extrabold text-xl text-sand-50">STELLA</p>
-          <p className="text-xs tracking-widest uppercase text-sand-50/50 mt-1">
+          <img
+            src="/images/logo-white.webp"
+            alt="STELLA — студия лазерной эпиляции"
+            className="h-8 w-auto"
+          />
+          <p className="text-xs tracking-widest uppercase text-sand-50/50 mt-2">
             студия лазерной эпиляции
           </p>
           <p className="mt-4 text-sm max-w-xs">

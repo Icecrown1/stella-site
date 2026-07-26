@@ -13,6 +13,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const studiiHub: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/studii`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+  ];
+
   const studioPages: MetadataRoute.Sitemap = STUDIOS.map((studio) => ({
     url: `${SITE_URL}/studii/${studio.slug}`,
     lastModified: new Date(),
@@ -66,6 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     ...blogPages,
+    ...studiiHub,
     ...studioPages,
     {
       url: `${SITE_URL}/privacy`,

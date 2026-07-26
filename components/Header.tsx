@@ -7,7 +7,7 @@ import { ZONES } from '@/lib/zones';
 const NAV_ITEMS = [
   { label: 'Цены', href: '/#tseny' },
   { label: 'Косметологи', href: '/#kosmetologi' },
-  { label: 'Студии', href: '/#studii' },
+  { label: 'Студии', href: '/studii' },
   { label: 'Отзывы', href: '/#otzyvy' },
   { label: 'Блог', href: '/blog' },
   { label: 'Контакты', href: '/#kontakty' }
@@ -41,10 +41,12 @@ export default function Header() {
     >
       <div className="container-page flex items-center justify-between py-4">
         <a href="/" className="flex flex-col leading-none">
-          <span className="font-display font-extrabold text-2xl tracking-tight text-crimson-500">
-            STELLA
-          </span>
-          <span className="text-[11px] tracking-[0.2em] text-ink-900/60 uppercase mt-0.5">
+          <img
+            src="/images/logo-crimson.webp"
+            alt="STELLA — студия лазерной эпиляции"
+            className="h-8 sm:h-9 w-auto"
+          />
+          <span className="text-[10px] tracking-[0.2em] text-ink-900/60 uppercase mt-1">
             студия лазерной эпиляции
           </span>
         </a>
@@ -144,9 +146,11 @@ export default function Header() {
         <div className="lg:hidden fixed inset-0 z-[60] bg-sand-50 overflow-y-auto">
           <div className="container-page flex items-center justify-between py-4">
             <a href="/" className="flex flex-col leading-none" onClick={() => setMobileOpen(false)}>
-              <span className="font-display font-extrabold text-2xl tracking-tight text-crimson-500">
-                STELLA
-              </span>
+              <img
+                src="/images/logo-crimson.webp"
+                alt="STELLA"
+                className="h-8 w-auto"
+              />
             </a>
             <button
               type="button"

@@ -2,17 +2,39 @@
 
 import { useState } from 'react';
 
+// Коды стран для формы записи. Первым — Таджикистан (основная аудитория).
+const COUNTRY_CODES = [
+  { code: '+992', country: 'Таджикистан', digits: 9, placeholder: '93 364 0290' },
+  { code: '+998', country: 'Узбекистан', digits: 9, placeholder: '90 123 4567' },
+  { code: '+996', country: 'Кыргызстан', digits: 9, placeholder: '700 123 456' },
+  { code: '+7', country: 'Россия / Казахстан', digits: 10, placeholder: '900 123 4567' }
+];
+
 export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
+  const [countryCode, setCountryCode] = useState(COUNTRY_CODES[0].code);
+  const [phoneDigits, setPhoneDigits] = useState('');
+
+  const selected =
+    COUNTRY_CODES.find((c) => c.code === countryCode) ?? COUNTRY_CODES[0];
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Оставляем только цифры и режем до нужной длины для выбранной страны
+    const digits = e.target.value.replace(/\D/g, '').slice(0, selected.digits);
+    setPhoneDigits(digits);
+  };
+
+  const phoneComplete = phoneDigits.length === selected.digits;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!phoneComplete) return;
     setStatus('loading');
 
     const form = new FormData(e.currentTarget);
     const payload = {
       name: form.get('name'),
-      phone: form.get('phone'),
+      phone: `${countryCode} ${phoneDigits}`,
       zone: form.get('zone')
     };
 
@@ -65,19 +87,45 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
                 placeholder="Как к вам обращаться"
               />
             </div>
+
             <div>
               <label htmlFor="phone" className="text-sm font-medium text-ink-900">
                 Телефон
               </label>
-              <input
-                id="phone"
-                name="phone"
-                required
-                type="tel"
-                className="mt-1.5 w-full rounded-lg border border-ink-900/15 bg-sand-100/60 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-crimson-500"
-                placeholder="+992 __ ___ ____"
-              />
+              <div className="mt-1.5 flex gap-2">
+                <select
+                  aria-label="Код страны"
+                  value={countryCode}
+                  onChange={(e) => {
+                    setCountryCode(e.target.value);
+                    setPhoneDigits('');
+                  }}
+                  className="shrink-0 rounded-lg border border-ink-900/15 bg-sand-100/60 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-crimson-500"
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.code}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  id="phone"
+                  name="phone"
+                  required
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  value={phoneDigits}
+                  onChange={handlePhoneChange}
+                  className="w-full rounded-lg border border-ink-900/15 bg-sand-100/60 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-crimson-500"
+                  placeholder={selected.placeholder}
+                />
+              </div>
+              <p className="mt-1 text-xs text-ink-900/40">
+                {selected.country} · {phoneDigits.length}/{selected.digits} цифр
+              </p>
             </div>
+
             <div>
               <label htmlFor="zone" className="text-sm font-medium text-ink-900">
                 Зона
@@ -95,16 +143,17 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
                 <option>Другое / уточню у администратора</option>
               </select>
             </div>
+
             <button
               type="submit"
-              disabled={status === 'loading'}
+              disabled={status === 'loading' || !phoneComplete}
               className="w-full rounded-full bg-crimson-500 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors disabled:opacity-60"
             >
               {status === 'loading' ? 'Отправляем…' : 'Отправить заявку'}
             </button>
             {status === 'error' && (
               <p className="text-sm text-crimson-600">
-                Не получилось отправить — позвоните нам напрямую или напишите в WhatsApp.
+                Не получилось отправить — напишите нам в WhatsApp.
               </p>
             )}
           </form>

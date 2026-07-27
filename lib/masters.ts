@@ -54,7 +54,14 @@ export const MASTERS: Master[] = [
     reviewsCount: 98,
     photo: '/images/master-manizha.webp'
   },
-  { slug: 'angelina', name: 'Ангелина', studioId: 'khujand-nabiev' }
+  {
+    slug: 'angelina',
+    name: 'Ангелина',
+    studioId: 'khujand-nabiev',
+    experience: '1 год',
+    reviewsCount: 97,
+    photo: '/images/master-angelina.webp'
+  }
 ];
 
 export function getMastersByStudio(studioId: string): Master[] {

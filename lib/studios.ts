@@ -101,6 +101,17 @@ export const STUDIOS: Studio[] = [
     city: 'Худжанд',
     address: 'проспект Р. Набиева, ЖК «Худжанд Сити», салон «Бурда», 2 этаж',
     landmark: 'Ориентир: рядом с ЗАГСом и Хукуматом',
+    photo: '/images/studios/nabieva-cabinet-1.webp',
+    photos: [
+      '/images/studios/nabieva-cabinet-1.webp',
+      '/images/studios/nabieva-cabinet-2.webp',
+      '/images/studios/nabieva-laser.webp',
+      '/images/studios/nabieva-certificates.webp',
+      '/images/studios/nabieva-entrance.webp',
+      '/images/studios/nabieva-exterior.webp'
+    ],
+    yandexMapUrl: 'https://yandex.ru/maps/-/CTrE5QKx',
+    googleMapUrl: 'https://share.google/jqswQym2gvmfbLGt5',
     pageTitle:
       'Студия STELLA в Худжанде — ЖК «Худжанд Сити», проспект Р. Набиева',
     metaDescription:

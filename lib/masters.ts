@@ -51,6 +51,7 @@ export const MASTERS: Master[] = [
     slug: 'manizha',
     name: 'Манижа',
     studioId: 'khujand-nabiev',
+    experience: '1 год',
     reviewsCount: 98,
     photo: '/images/master-manizha.webp'
   },

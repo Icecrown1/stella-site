@@ -13,6 +13,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const otzyvyPage: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/otzyvy`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+  ];
+
   const studiiHub: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}/studii`,
@@ -75,6 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     ...blogPages,
+    ...otzyvyPage,
     ...studiiHub,
     ...studioPages,
     {

@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { label: 'Цены', href: '/#tseny' },
   { label: 'Косметологи', href: '/#kosmetologi' },
   { label: 'Студии', href: '/studii' },
-  { label: 'Отзывы', href: '/#otzyvy' },
+  { label: 'Отзывы', href: '/otzyvy' },
   { label: 'Блог', href: '/blog' },
   { label: 'Контакты', href: '/#kontakty' }
 ];

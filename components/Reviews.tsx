@@ -38,7 +38,14 @@ export default function Reviews() {
           <h2 className="font-display font-bold text-2xl sm:text-3xl text-ink-900">
             Отзывы наших клиентов
           </h2>
-          <div className="hidden sm:flex gap-2">
+          <div className="flex items-center gap-3">
+            <a
+              href="/otzyvy"
+              className="text-sm font-medium text-crimson-500 hover:underline whitespace-nowrap"
+            >
+              Все отзывы →
+            </a>
+            <div className="hidden sm:flex gap-2">
             <button
               onClick={() => scroll(-1)}
               aria-label="Предыдущие отзывы"
@@ -53,6 +60,7 @@ export default function Reviews() {
             >
               <ChevronRight size={18} />
             </button>
+            </div>
           </div>
         </div>
 

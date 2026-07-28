@@ -60,6 +60,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...zonePages,
     {
+      url: `${SITE_URL}/uslugi/vsyo-telo`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/uslugi/kompleksy`,
       lastModified: new Date(),
       changeFrequency: "monthly",

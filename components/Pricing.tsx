@@ -13,9 +13,9 @@ const ZONES = [
 ];
 
 const COMPLEXES = [
-  { name: 'Бикини + подмышки', price: 'от 260 сомони', img: '/images/zones/complex-bikini-podymshki.webp' },
-  { name: 'Ноги + бикини',     price: 'от 310 сомони', img: '/images/zones/complex-nogi-bikini.webp' },
-  { name: 'Всё тело',          price: 'от 500 сомони', img: '/images/zones/complex-vsyo-telo.webp' }
+  { name: 'Бикини + подмышки', price: 'от 260 сомони', img: '/images/zones/complex-bikini-podymshki.webp', href: '/uslugi/kompleksy' },
+  { name: 'Ноги + бикини',     price: 'от 310 сомони', img: '/images/zones/complex-nogi-bikini.webp', href: '/uslugi/kompleksy' },
+  { name: 'Всё тело',          price: 'от 500 сомони', img: '/images/zones/complex-vsyo-telo.webp', href: '/uslugi/vsyo-telo' }
 ];
 
 const PLANS = [
@@ -72,7 +72,7 @@ export default function Pricing() {
         {tab === 'Комплексы' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {COMPLEXES.map((z) => (
-              <ZoneCard key={z.name} name={z.name} price={z.price} img={z.img} href="/uslugi/kompleksy" />
+              <ZoneCard key={z.name} name={z.name} price={z.price} img={z.img} href={z.href} />
             ))}
           </div>
         )}

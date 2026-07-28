@@ -29,7 +29,8 @@ const COMPLEXES = [
     name: 'Всё тело',
     price: 'от 500 сомони',
     photo: '/images/zones/complex-vsyo-telo.webp',
-    note: 'Максимальная выгода на процедуру по сравнению с оплатой зон отдельно.'
+    note: 'Максимальная выгода на процедуру по сравнению с оплатой зон отдельно.',
+    href: '/uslugi/vsyo-telo'
   }
 ];
 
@@ -87,6 +88,14 @@ export default function KompleksyPage() {
                     </p>
                     <p className="text-crimson-500 font-medium mt-1">{c.price}</p>
                     <p className="text-sm text-ink-900/60 mt-3">{c.note}</p>
+                    {'href' in c && c.href && (
+                      <a
+                        href={c.href}
+                        className="mt-3 inline-block text-sm font-medium text-crimson-500 hover:underline"
+                      >
+                        Подробнее про всё тело →
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

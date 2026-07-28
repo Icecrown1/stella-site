@@ -62,8 +62,17 @@ export default function UslugiPage() {
             ))}
 
             <a
-              href="/uslugi/kompleksy"
+              href="/uslugi/vsyo-telo"
               className="rounded-xl2 bg-crimson-500 p-6 text-sand-50 hover:bg-crimson-600 transition-colors flex flex-col justify-center"
+            >
+              <p className="font-display font-semibold text-lg">Всё тело</p>
+              <p className="text-sand-50/80 mt-1">от 500 сомони</p>
+              <p className="text-sm text-sand-50/70 mt-2">Все зоны за один визит — максимальная выгода</p>
+            </a>
+
+            <a
+              href="/uslugi/kompleksy"
+              className="rounded-xl2 bg-ink-900 p-6 text-sand-50 hover:bg-ink-900/90 transition-colors flex flex-col justify-center"
             >
               <p className="font-display font-semibold text-lg">Комплексы зон</p>
               <p className="text-sand-50/80 mt-1">от 260 сомони</p>

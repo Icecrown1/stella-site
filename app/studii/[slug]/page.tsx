@@ -118,12 +118,23 @@ export default function StudioPage({ params }: { params: { slug: string } }) {
             <p className="mt-6 text-ink-900/75 leading-relaxed">{studio.intro}</p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <a
-                href="#zapis"
-                className="rounded-full bg-crimson-500 px-7 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
-              >
-                Записаться в эту студию
-              </a>
+              {studio.altegioUrl ? (
+                <a
+                  href={studio.altegioUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-crimson-500 px-7 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
+                >
+                  Записаться онлайн — выбрать время
+                </a>
+              ) : (
+                <a
+                  href="#zapis"
+                  className="rounded-full bg-crimson-500 px-7 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
+                >
+                  Записаться в эту студию
+                </a>
+              )}
               <a
                 href={yandexHref}
                 target="_blank"
@@ -141,6 +152,17 @@ export default function StudioPage({ params }: { params: { slug: string } }) {
                 Google Maps
               </a>
             </div>
+
+            {studio.altegioUrl && (
+              <p className="mt-3 text-xs text-ink-900/45">
+                Онлайн-запись откроется в новом окне — там можно выбрать мастера,
+                зону и удобное время. Если удобнее по звонку —{' '}
+                <a href="#zapis" className="text-crimson-500 hover:underline">
+                  оставьте заявку внизу страницы
+                </a>
+                .
+              </p>
+            )}
 
             {studio.photos && studio.photos.length > 0 && (
               <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-3">

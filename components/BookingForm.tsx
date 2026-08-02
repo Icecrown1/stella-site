@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { STUDIOS } from '@/lib/studios';
 
 // Коды стран для формы записи. Первым — Таджикистан (основная аудитория).
 const COUNTRY_CODES = [
@@ -19,7 +20,6 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
     COUNTRY_CODES.find((c) => c.code === countryCode) ?? COUNTRY_CODES[0];
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Оставляем только цифры и режем до нужной длины для выбранной страны
     const digits = e.target.value.replace(/\D/g, '').slice(0, selected.digits);
     setPhoneDigits(digits);
   };
@@ -52,15 +52,42 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
 
   return (
     <section id="zapis" className="bg-crimson-500 py-16 scroll-mt-20">
-      <div className="container-page grid lg:grid-cols-2 gap-10 items-center">
+      <div className="container-page grid lg:grid-cols-2 gap-10 items-start">
         <div>
           <h2 className="font-display font-bold text-2xl sm:text-3xl text-sand-50">
-            Записаться на первую процедуру
+            Записаться на процедуру
           </h2>
           <p className="mt-3 text-sand-50/80 max-w-md">
-            Оставьте имя, телефон и зону — администратор перезвонит и подберёт
-            удобное время в Душанбе или Худжанде.
+            Быстрее всего — онлайн-запись: выбираете студию, мастера и удобное
+            время сами, в пару кликов.
           </p>
+
+          <div className="mt-6 space-y-2.5">
+            {STUDIOS.map(
+              (s) =>
+                s.altegioUrl && (
+                  <a
+                    key={s.id}
+                    href={s.altegioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between rounded-xl bg-sand-50/10 hover:bg-sand-50/20 border border-sand-50/20 px-5 py-3.5 transition-colors"
+                  >
+                    <span>
+                      <span className="block text-sm font-semibold text-sand-50">
+                        {s.city} — {s.address.split(',')[0]}
+                      </span>
+                      <span className="block text-xs text-sand-50/60 mt-0.5">
+                        {s.landmark.replace('Ориентир: ', '')}
+                      </span>
+                    </span>
+                    <span className="shrink-0 ml-4 text-sm font-semibold text-sand-50">
+                      Выбрать время →
+                    </span>
+                  </a>
+                )
+            )}
+          </div>
         </div>
 
         {status === 'ok' ? (
@@ -74,6 +101,15 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="rounded-xl2 bg-sand-50 p-7 space-y-4">
+            <div>
+              <p className="font-display font-semibold text-ink-900">
+                Или оставьте заявку
+              </p>
+              <p className="text-sm text-ink-900/60 mt-1">
+                Администратор перезвонит и подберёт удобное время сам.
+              </p>
+            </div>
+
             <div>
               <label htmlFor="name" className="text-sm font-medium text-ink-900">
                 Имя

@@ -13,6 +13,8 @@ export type Studio = {
   // Прямые ссылки на карточку организации (не просто поиск по адресу).
   yandexMapUrl?: string;
   googleMapUrl?: string;
+  // Ссылка онлайн-записи Altegio этой студии
+  altegioUrl?: string;
   // Тексты для страницы студии /studii/[slug]
   pageTitle: string;
   metaDescription: string;
@@ -36,6 +38,7 @@ export const STUDIOS: Studio[] = [
       '/images/studios/huseynzoda-certificates.webp',
       '/images/studios/huseynzoda-exterior.webp'
     ],
+    altegioUrl: 'https://n1317313.alteg.io',
     yandexMapUrl:
       'https://yandex.ru/profile/194808266909?lang=ru&utm_source=copy_link&utm_medium=social&utm_campaign=share',
     googleMapUrl: 'https://maps.app.goo.gl/rDAbsSkodHdHKkZK9',
@@ -61,6 +64,7 @@ export const STUDIOS: Studio[] = [
       '/images/studios/rasulov-certificates.webp',
       '/images/studios/rasulov-exterior.webp'
     ],
+    altegioUrl: 'https://n1333851.alteg.io',
     yandexMapUrl: 'https://yandex.ru/maps/-/CTf8N0jG',
     pageTitle:
       'Студия STELLA на Расулова 9/1, Душанбе — лазерная эпиляция у «Душанбе Сити»',
@@ -86,6 +90,7 @@ export const STUDIOS: Studio[] = [
       '/images/studios/zavkibekova-reception.webp',
       '/images/studios/zavkibekova-exterior.webp'
     ],
+    altegioUrl: 'https://n1369733.alteg.io',
     pageTitle:
       'Студия STELLA на Завкибекова 10, Душанбе — лазерная эпиляция в клинике «Гиппократ»',
     metaDescription:
@@ -110,6 +115,7 @@ export const STUDIOS: Studio[] = [
       '/images/studios/nabieva-entrance.webp',
       '/images/studios/nabieva-exterior.webp'
     ],
+    altegioUrl: 'https://n1413217.alteg.io',
     yandexMapUrl: 'https://yandex.ru/maps/-/CTrE5QKx',
     googleMapUrl: 'https://share.google/jqswQym2gvmfbLGt5',
     pageTitle:

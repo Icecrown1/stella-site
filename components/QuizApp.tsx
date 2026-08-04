@@ -5,10 +5,11 @@ import {
   ZONES,
   ZoneId,
   buildPlan,
-  fiveYearSpend
+  fiveYearSpend,
+  FREQ_OPTIONS
 } from '@/lib/quiz-pricing';
 
-const WHATSAPP_LINK = 'https://wa.me/message/CYJT333P3IPBG1';
+const WHATSAPP_NUMBER = '992977607711';
 const ALTEGIO_KHUJAND = 'https://n1413217.alteg.io';
 
 type Method = 'shave' | 'sugaring' | 'cream' | 'none';
@@ -19,13 +20,6 @@ const METHODS: { id: Method; label: string }[] = [
   { id: 'sugaring', label: 'Шугаринг / воск' },
   { id: 'cream', label: 'Крем-депилятор' },
   { id: 'none', label: 'Почти никак — надоело всё' }
-];
-
-const FREQS: { id: string; label: string }[] = [
-  { id: 'every2_3days', label: 'Каждые 2–3 дня' },
-  { id: 'weekly', label: 'Примерно раз в неделю' },
-  { id: 'every2_3weeks', label: 'Раз в 2–3 недели' },
-  { id: 'monthly', label: 'Раз в месяц и реже' }
 ];
 
 const BARRIERS: { id: Barrier; label: string }[] = [
@@ -57,7 +51,8 @@ export default function QuizApp() {
   const [step, setStep] = useState(0);
   const [zones, setZones] = useState<ZoneId[]>([]);
   const [method, setMethod] = useState<Method | null>(null);
-  const [freq, setFreq] = useState<string | null>(null);
+  const [freqLabel, setFreqLabel] = useState<string | null>(null);
+  const [freqPerYear, setFreqPerYear] = useState<number | null>(null);
   const [barrier, setBarrier] = useState<Barrier | null>(null);
   const [skin, setSkin] = useState<string | null>(null);
   const [city, setCity] = useState<'Душанбе' | 'Худжанд' | null>(null);
@@ -80,8 +75,11 @@ export default function QuizApp() {
 
   const plan = useMemo(() => buildPlan(zones, city ?? 'Душанбе'), [zones, city]);
   const spend5y = useMemo(
-    () => (method && freq ? fiveYearSpend(method, freq) : null),
-    [method, freq]
+    () =>
+      method && method !== 'none' && freqPerYear
+        ? fiveYearSpend(method, freqPerYear)
+        : null,
+    [method, freqPerYear]
   );
   const course9Total = plan.course9Total;
   const savings = spend5y !== null ? spend5y - course9Total : null;
@@ -110,7 +108,7 @@ export default function QuizApp() {
       whatsappOk: waOk,
       zones: zones.map((z) => ZONES.find((x) => x.id === z)?.label),
       method: METHODS.find((m) => m.id === method)?.label,
-      freq: FREQS.find((f) => f.id === freq)?.label,
+      freq: freqLabel ?? '—',
       barrier: BARRIERS.find((b) => b.id === barrier)?.label,
       skin: SKINS.find((s) => s.id === skin)?.label,
       city,
@@ -134,8 +132,14 @@ export default function QuizApp() {
     go(8);
   };
 
+  const zoneLabels = zones
+    .map((z) => ZONES.find((x) => x.id === z)?.label)
+    .filter(Boolean)
+    .join(' + ');
+  const planLabel =
+    plan.title === 'Твой набор зон' ? zoneLabels : `${plan.title} (${zoneLabels})`;
   const waText = encodeURIComponent(
-    `Здравствуйте! Я прошла квиз, мой план: ${plan.title}, хочу записаться в ${city ?? 'Душанбе'}`
+    `Здравствуйте! Я прошла квиз. Мой план: ${planLabel}, курс 9 процедур — ${plan.course9Total} сомони. Хочу записаться в ${city ?? 'Душанбе'}`
   );
 
   const Progress = () =>
@@ -181,9 +185,11 @@ export default function QuizApp() {
         {/* Экран 0 — старт */}
         {step === 0 && (
           <div className="pt-10 text-center">
-            <p className="font-display font-extrabold text-2xl text-crimson-500">
-              STELLA
-            </p>
+            <img
+              src="/images/logo-crimson-full.webp"
+              alt="STELLA — студия лазерной эпиляции"
+              className="mx-auto h-16 w-auto"
+            />
             <h1 className="mt-8 font-display font-extrabold text-3xl leading-tight text-ink-900">
               Узнай свой план гладкости за 1 минуту
             </h1>
@@ -246,21 +252,37 @@ export default function QuizApp() {
             </h2>
             <div className="space-y-2.5">
               {METHODS.map((m) => (
-                <Option key={m.id} label={m.label} onClick={() => pick(setMethod, m.id, 3)} />
+                <Option
+                  key={m.id}
+                  label={m.label}
+                  onClick={() => pick(setMethod, m.id, m.id === 'none' ? 4 : 3)}
+                />
               ))}
             </div>
           </div>
         )}
 
-        {/* Вопрос 3 — частота */}
-        {step === 3 && (
+        {/* Вопрос 3 — частота (варианты зависят от способа; при «почти никак» пропускается) */}
+        {step === 3 && method && method !== 'none' && (
           <div>
             <h2 className="font-display font-bold text-xl text-ink-900 mb-5">
-              Как часто приходится это делать?
+              {method === 'sugaring'
+                ? 'Как часто обычно делаешь шугаринг или воск?'
+                : method === 'cream'
+                ? 'Как часто пользуешься кремом?'
+                : 'Как часто приходится браться за бритву?'}
             </h2>
             <div className="space-y-2.5">
-              {FREQS.map((f) => (
-                <Option key={f.id} label={f.label} onClick={() => pick(setFreq, f.id, 4)} />
+              {(FREQ_OPTIONS[method] ?? []).map((f) => (
+                <Option
+                  key={f.id}
+                  label={f.label}
+                  onClick={() => {
+                    setFreqLabel(f.label);
+                    setFreqPerYear(f.perYear);
+                    go(4);
+                  }}
+                />
               ))}
             </div>
           </div>
@@ -387,7 +409,10 @@ export default function QuizApp() {
         {step === 8 && (
           <div className="space-y-4">
             <h2 className="font-display font-extrabold text-2xl text-ink-900">
-              {name ? `${name}, твой` : 'Твой'} план гладкости 💫
+              {name
+                ? `${name.trim().charAt(0).toUpperCase()}${name.trim().slice(1)}, твой`
+                : 'Твой'}{' '}
+              план гладкости 💫
             </h2>
 
             {/* 1. Персональный блок по барьеру */}
@@ -500,7 +525,7 @@ export default function QuizApp() {
                 Начни с первого визита по акции — {plan.promoPrice} сомони
               </p>
               <a
-                href={`${WHATSAPP_LINK}`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 block w-full text-center rounded-full bg-crimson-500 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
@@ -520,8 +545,7 @@ export default function QuizApp() {
                 Записаться онлайн
               </a>
               <p className="mt-2 text-center text-xs text-ink-900/45">
-                Напиши в WhatsApp: «Я прошла квиз, мой план — {plan.title},
-                хочу записаться в {city}»
+                Сообщение с твоим планом уже подставится — просто отправь его
               </p>
             </div>
 

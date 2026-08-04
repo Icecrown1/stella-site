@@ -159,23 +159,40 @@ export function buildPlan(selected: ZoneId[], city: City): Plan {
   };
 }
 
-// Калькулятор экономии за 5 лет
+// Калькулятор экономии за 5 лет.
+// Стоимость одного раза по способам и варианты частоты — СВОИ для каждого
+// способа (у бритвы и шугаринга разные реалистичные интервалы).
 export const METHOD_COST_PER_TIME: Record<string, number> = {
   shave: 15,
   sugaring: 80,
   cream: 25
 };
 
-export const FREQ_PER_YEAR: Record<string, number> = {
-  every2_3days: 120,
-  weekly: 52,
-  every2_3weeks: 20,
-  monthly: 12
+export type FreqOption = { id: string; label: string; perYear: number };
+
+export const FREQ_OPTIONS: Record<string, FreqOption[]> = {
+  shave: [
+    { id: 'sh1', label: 'Каждые 2–3 дня', perYear: 120 },
+    { id: 'sh2', label: 'Примерно раз в неделю', perYear: 52 },
+    { id: 'sh3', label: 'Раз в 2–3 недели', perYear: 20 },
+    { id: 'sh4', label: 'Раз в месяц и реже', perYear: 12 }
+  ],
+  sugaring: [
+    { id: 'su1', label: 'Раз в 2–3 недели', perYear: 20 },
+    { id: 'su2', label: 'Примерно раз в месяц', perYear: 12 },
+    { id: 'su3', label: 'Раз в полтора-два месяца', perYear: 7 },
+    { id: 'su4', label: 'Нерегулярно — как получится', perYear: 10 }
+  ],
+  cream: [
+    { id: 'cr1', label: 'Примерно раз в неделю', perYear: 52 },
+    { id: 'cr2', label: 'Раз в 2–3 недели', perYear: 20 },
+    { id: 'cr3', label: 'Примерно раз в месяц', perYear: 12 },
+    { id: 'cr4', label: 'Реже раза в месяц', perYear: 8 }
+  ]
 };
 
-export function fiveYearSpend(method: string, freq: string): number | null {
+export function fiveYearSpend(method: string, perYear: number): number | null {
   const cost = METHOD_COST_PER_TIME[method];
-  const times = FREQ_PER_YEAR[freq];
-  if (!cost || !times) return null;
-  return cost * times * 5;
+  if (!cost || !perYear) return null;
+  return cost * perYear * 5;
 }

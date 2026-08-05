@@ -509,6 +509,13 @@ export default function QuizApp() {
                 <p className="mt-3 text-center font-semibold text-ink-900">
                   Экономия — ~{savings} сомони 🎉
                 </p>
+                {method === 'shave' && (
+                  <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">
+                    И это только деньги. Вместе с бритвой уходят порезы,
+                    раздражение и вросшие волосы — кожа перестаёт жить в режиме
+                    постоянного стресса.
+                  </p>
+                )}
               </div>
             ) : spend5y !== null ? (
               <div className="rounded-xl2 bg-white/70 p-5">
@@ -516,6 +523,13 @@ export default function QuizApp() {
                   На текущем способе за 5 лет уйдёт ~{spend5y} сомони — и волосы
                   будут возвращаться снова. Курс решает вопрос надолго.
                 </p>
+                {method === 'shave' && (
+                  <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">
+                    И это только деньги. Вместе с бритвой уходят порезы,
+                    раздражение и вросшие волосы — кожа перестаёт жить в режиме
+                    постоянного стресса.
+                  </p>
+                )}
               </div>
             ) : null}
 

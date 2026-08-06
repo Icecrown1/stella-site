@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   }
 
   const phone = String(body.phone ?? '');
-  if (!/^\+992 \d{9}$/.test(phone)) {
+  if (!/^\+99[26] \d{9}$/.test(phone)) {
     return NextResponse.json({ ok: false, error: 'bad_phone' }, { status: 400 });
   }
 
@@ -59,9 +59,14 @@ export async function POST(req: Request) {
 
   const text = lines.join('\n');
 
-  // 1) Telegram — всегда (та же интеграция, что у формы записи)
+  // 1) Telegram — всегда (тот же бот, что у формы записи).
+  // Заявки из Кыргызстана (+996) уходят в отдельный чат TELEGRAM_CHAT_ID_KG;
+  // если он не задан в Secrets — падают в основной, чтобы ничего не терялось.
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
-  const tgChat = process.env.TELEGRAM_CHAT_ID;
+  const isKg = phone.startsWith('+996');
+  const tgChat = isKg
+    ? process.env.TELEGRAM_CHAT_ID_KG ?? process.env.TELEGRAM_CHAT_ID
+    : process.env.TELEGRAM_CHAT_ID;
   let tgOk = false;
   if (tgToken && tgChat) {
     try {

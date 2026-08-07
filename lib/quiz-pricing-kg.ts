@@ -52,6 +52,7 @@ type ComplexDef = {
   title: string;
   zones: ZoneId[];
   promo: number;
+  single: number; // разовая цена без абонемента
   perProc9: number;
   total9: number;
 };
@@ -61,6 +62,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №1 «Подмышки + бикини»',
     zones: ['podmyshki', 'bikini'],
     promo: 990,
+    single: 2890,
     perProc9: 2020,
     total9: 18180
   },
@@ -68,6 +70,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №2 «Голени + бикини»',
     zones: ['goleni', 'bikini'],
     promo: 990,
+    single: 3490,
     perProc9: 2440,
     total9: 21960
   },
@@ -75,6 +78,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №3 «Подмышки + бикини + голени»',
     zones: ['podmyshki', 'bikini', 'goleni'],
     promo: 1290,
+    single: 3990,
     perProc9: 2790,
     total9: 25110
   },
@@ -82,6 +86,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №4 «Руки + ноги полностью»',
     zones: ['ruki', 'nogi'],
     promo: 990,
+    single: 4490,
     perProc9: 3140,
     total9: 28260
   },
@@ -89,6 +94,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №5 «Подмышки + бикини + ноги полностью»',
     zones: ['podmyshki', 'bikini', 'nogi'],
     promo: 1490,
+    single: 4990,
     perProc9: 3490,
     total9: 31410
   },
@@ -96,6 +102,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №7 «Подмышки + бикини + ноги + руки»',
     zones: ['podmyshki', 'bikini', 'nogi', 'ruki'],
     promo: 2490,
+    single: 6290,
     perProc9: 4390,
     total9: 39510
   }
@@ -104,6 +111,7 @@ const COMPLEXES: ComplexDef[] = [
 const VSE_TELO = {
   title: 'Комплекс №8 «Всё тело»',
   promo: 3990,
+  single: 7490,
   perProc9: 5240,
   total9: 47160
 };
@@ -119,6 +127,7 @@ const PROMO_BY_COUNT: Record<number, number> = { 1: 790, 2: 990, 3: 1290, 4: 149
 export type Plan = {
   title: string;
   promoPrice: number;
+  regularPrice: number; // разовая цена того же визита без акции
   course9PerProc: number;
   course9Total: number;
 };
@@ -135,6 +144,7 @@ export function buildPlanKg(selected: ZoneId[]): Plan {
     return {
       title: VSE_TELO.title,
       promoPrice: isFiveSet ? 2990 : VSE_TELO.promo,
+      regularPrice: VSE_TELO.single,
       course9PerProc: VSE_TELO.perProc9,
       course9Total: VSE_TELO.total9
     };
@@ -148,6 +158,7 @@ export function buildPlanKg(selected: ZoneId[]): Plan {
     return {
       title: match.title,
       promoPrice: match.promo,
+      regularPrice: match.single,
       course9PerProc: match.perProc9,
       course9Total: match.total9
     };
@@ -160,6 +171,7 @@ export function buildPlanKg(selected: ZoneId[]): Plan {
     return {
       title: ZONES.find((z) => z.id === zone)?.label ?? 'Одна зона',
       promoPrice: 790,
+      regularPrice: ZONE_SINGLE[ZONE_CLASS[zone]],
       course9PerProc: per,
       course9Total: per * 9
     };
@@ -170,9 +182,14 @@ export function buildPlanKg(selected: ZoneId[]): Plan {
     (sum, z) => sum + zoneCourse9PerProc(ZONE_CLASS[z as Exclude<ZoneId, 'vse_telo'>]),
     0
   );
+  const regular = real.reduce(
+    (sum, z) => sum + ZONE_SINGLE[ZONE_CLASS[z as Exclude<ZoneId, 'vse_telo'>]],
+    0
+  );
   return {
     title: 'Твой набор зон',
     promoPrice: PROMO_BY_COUNT[real.length] ?? 1490,
+    regularPrice: regular,
     course9PerProc: per,
     course9Total: per * 9
   };

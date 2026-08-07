@@ -25,7 +25,7 @@ const METHODS: { id: Method; label: string }[] = [
 const BARRIERS: { id: Barrier; label: string }[] = [
   { id: 'pain', label: 'Боюсь, что будет больно' },
   { id: 'price', label: 'Думала, это очень дорого' },
-  { id: 'shy', label: 'Стеснение / неловко' },
+  { id: 'shy', label: 'Стесняюсь / неловко' },
   { id: 'doubt', label: 'Не верю, что будет результат' },
   { id: 'busy', label: 'Ничего — просто не доходили руки' }
 ];
@@ -62,6 +62,31 @@ export default function QuizApp() {
   const [hp, setHp] = useState(''); // honeypot
   const [sending, setSending] = useState(false);
   const [utm, setUtm] = useState<Record<string, string>>({});
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+
+  // Таймер брони акционной цены: 30 минут, переживает перезагрузку страницы.
+  // По истечении просто скрывается — запись не блокируем.
+  useEffect(() => {
+    if (step !== 8) return;
+    const KEY = 'stella_quiz_deadline';
+    let deadline = Number(localStorage.getItem(KEY) ?? 0);
+    if (!deadline || deadline < Date.now()) {
+      deadline = Date.now() + 30 * 60 * 1000;
+      localStorage.setItem(KEY, String(deadline));
+    }
+    const tick = () => {
+      const left = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+      setSecondsLeft(left);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [step]);
+
+  const timerText =
+    secondsLeft !== null && secondsLeft > 0
+      ? `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`
+      : null;
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -139,7 +164,7 @@ export default function QuizApp() {
   const planLabel =
     plan.title === 'Твой набор зон' ? zoneLabels : `${plan.title} (${zoneLabels})`;
   const waText = encodeURIComponent(
-    `Здравствуйте! Я прошла квиз. Мой план: ${planLabel}, курс 9 процедур — ${plan.course9Total} сомони. Хочу записаться в ${city ?? 'Душанбе'}`
+    `Здравствуйте! Я прошла квиз. Мой план: ${planLabel}. Хочу записаться на первый визит по акции за ${plan.promoPrice} сомони в ${city ?? 'Душанбе'}`
   );
 
   const Progress = () =>
@@ -320,7 +345,7 @@ export default function QuizApp() {
         {step === 6 && (
           <div>
             <h2 className="font-display font-bold text-xl text-ink-900 mb-5">
-              Где тебе удобнее?
+              В каком городе ты живёшь?
             </h2>
             <div className="space-y-2.5">
               <Option label="Душанбе" onClick={() => pick(setCity, 'Душанбе', 7)} />
@@ -405,93 +430,128 @@ export default function QuizApp() {
           </div>
         )}
 
-        {/* Экран результата */}
+        {/* Экран результата — структура по аудиту конверсии:
+            персональный план → главный оффер (акция+таймер+CTA) →
+            курс с гарантией → экономия только в плюс → доказательства */}
         {step === 8 && (
           <div className="space-y-4">
-            <h2 className="font-display font-extrabold text-2xl text-ink-900">
-              {name
-                ? `${name.trim().charAt(0).toUpperCase()}${name.trim().slice(1)}, твой`
-                : 'Твой'}{' '}
-              план гладкости 💫
-            </h2>
-
-            {/* 1. Персональный блок по барьеру */}
-            {barrier === 'pain' && (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="font-semibold text-ink-900">Это спокойнее, чем ты думаешь</p>
-                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
-                  Аппарат охлаждает кожу до ~0° в момент вспышки — большинство
-                  описывает ощущение как тёплые щелчки. Можно начать с одной
-                  зоны за 75 сомони и убедиться самой.
-                </p>
-              </div>
-            )}
-            {barrier === 'shy' && (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="font-semibold text-ink-900">Только женщины и полная приватность</p>
-                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
-                  В STELLA работают только женщины-мастера, процедуры проходят в
-                  отдельных закрытых кабинетах, используются одноразовые
-                  материалы.
-                </p>
-              </div>
-            )}
-            {barrier === 'doubt' && (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="font-semibold text-ink-900">Результат — с письменной гарантией</p>
-                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
-                  Гарантия действует на курс из 9 процедур: если после 9
-                  оплаченных процедур результата нет — продолжаем бесплатно,
-                  пока результат не будет достигнут.
-                </p>
-              </div>
-            )}
-
-            {/* 2. План */}
-            <div className="rounded-xl2 bg-white/70 p-5">
-              <p className="text-xs uppercase tracking-wide text-ink-900/50">Твои зоны</p>
-              <p className="mt-1 text-sm text-ink-900/80">
+            <div>
+              <h2 className="font-display font-extrabold text-2xl text-ink-900 leading-tight">
+                {name
+                  ? `${name.trim().charAt(0).toUpperCase()}${name.trim().slice(1)}, тебе`
+                  : 'Тебе'}{' '}
+                подойдёт {plan.title}
+              </h2>
+              <p className="mt-2 text-sm text-ink-900/60">
                 {zones.map((z) => ZONES.find((x) => x.id === z)?.label).join(', ')}
+                {' · '}обычно 6–9 процедур с интервалом ~месяц
               </p>
-              <p className="mt-3 font-display font-semibold text-lg text-ink-900">
-                {plan.title}
-              </p>
-              <p className="mt-1.5 text-sm text-ink-900/70">
-                Обычно нужно 6–9 процедур с интервалом ~1 месяц — точное число
-                мастер уточнит на первом визите.
-              </p>
+              {barrier === 'pain' && (
+                <p className="mt-2 text-sm text-ink-900/70">
+                  И не переживай: аппарат охлаждает кожу до ~0° в момент вспышки
+                  — большинство описывает ощущения как тёплые щелчки.
+                </p>
+              )}
+              {barrier === 'shy' && (
+                <p className="mt-2 text-sm text-ink-900/70">
+                  И да — у нас только женщины-мастера, процедуры проходят в
+                  закрытых кабинетах.
+                </p>
+              )}
+              {barrier === 'doubt' && (
+                <p className="mt-2 text-sm text-ink-900/70">
+                  Результат закреплён письменной гарантией — она ниже.
+                </p>
+              )}
+              {barrier === 'price' && (
+                <p className="mt-2 text-sm text-ink-900/70">
+                  Поэтому начать можно с акционного первого визита — без покупки
+                  курса.
+                </p>
+              )}
+              {barrier === 'busy' && (
+                <p className="mt-2 text-sm text-ink-900/70">
+                  Хорошая новость: первый шаг займёт всего пару минут.
+                </p>
+              )}
             </div>
 
-            {/* 3. Цена курса */}
+            {/* ГЛАВНЫЙ ОФФЕР */}
             <div className="rounded-xl2 bg-crimson-500 p-5 text-sand-50">
               <p className="text-xs uppercase tracking-wide text-sand-50/70">
-                Курс 9 процедур · Гарантия: доводим до результата
+                Первый визит по акции
               </p>
-              <p className="mt-2 font-display font-bold text-2xl">
-                {plan.course9PerProc} сомони / процедура
+              <p className="mt-2 font-display font-bold text-3xl">
+                <span className="text-sand-50/50 line-through text-xl font-semibold mr-2">
+                  {plan.regularPrice}
+                </span>
+                {plan.promoPrice} сомони
               </p>
-              <p className="mt-1 text-sm text-sand-50/80">
-                Курс целиком — {plan.course9Total} сомони · рассрочка на 3–4
-                платежа без процентов (~{Math.round(plan.course9Total / 4)}
-                {' '}сомони/платёж)
+              <p className="mt-1.5 text-sm text-sand-50/85">
+                Все твои зоны + консультация мастера.
               </p>
-              <p className="mt-2 text-xs text-sand-50/60">
-                Есть также курсы на 5 и 7 процедур
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 block w-full text-center rounded-full bg-sand-50 py-3.5 text-sm font-bold text-crimson-500 hover:bg-sand-100 transition-colors"
+                onClick={() => track('quiz_cta_whatsapp')}
+              >
+                Забронировать визит за {plan.promoPrice} сомони
+              </a>
+              {timerText && (
+                <div className="mt-3 text-center">
+                  <p className="text-xs text-sand-50/75">
+                    ⏱ Отправь план сейчас — держим акционную цену за тобой
+                  </p>
+                  <p className="mt-1 font-display font-bold text-2xl tabular-nums tracking-wide">
+                    {timerText}
+                  </p>
+                </div>
+              )}
+              <p className="mt-1.5 text-center text-xs text-sand-50/55">
+                Сообщение с планом подставится автоматически
+              </p>
+              <a
+                href={
+                  city === 'Худжанд'
+                    ? ALTEGIO_KHUJAND
+                    : 'https://laserstella.com/#zapis'
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 block text-center text-xs text-sand-50/70 underline underline-offset-2 hover:text-sand-50"
+                onClick={() => track('quiz_cta_online')}
+              >
+                или выбери время онлайн
+              </a>
+            </div>
+
+            {/* Курс — продолжение, не ценник */}
+            <div className="rounded-xl2 bg-white/70 border-l-4 border-crimson-500/50 p-5">
+              <p className="text-xs uppercase tracking-wide text-ink-900/45">
+                Что дальше
+              </p>
+              <p className="mt-1 font-semibold text-ink-900">
+                Курс до полной гладкости
+              </p>
+              <p className="mt-1.5 text-sm text-ink-900/70">
+                {plan.course9PerProc} сомони / процедура на курсе из 9 процедур
+                · рассрочка на 3–4 платежа без процентов.
+              </p>
+              <p className="mt-3 rounded-lg bg-crimson-500/10 px-3.5 py-2.5 text-sm text-ink-900/85">
+                🛡 Если после полного курса результата не будет — продолжим
+                бесплатно. Это письменная гарантия.
               </p>
             </div>
 
-            {/* 4. Экономия */}
-            {method === 'none' ? (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="font-semibold text-ink-900">Твоё время тоже ресурс</p>
-                <p className="mt-1.5 text-sm text-ink-900/70">
-                  ~15 минут в неделю на удаление волос × 5 лет = 65 часов твоей
-                  жизни. Курс освобождает их насовсем.
+            {/* Экономия — только когда она реально в плюс */}
+            {savings !== null && savings > 0 ? (
+              <div className="rounded-xl2 border-2 border-crimson-500/30 bg-crimson-500/5 p-5">
+                <p className="text-xs uppercase tracking-wide text-crimson-500/80">
+                  Твоя выгода
                 </p>
-              </div>
-            ) : savings !== null && savings > 0 ? (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="font-semibold text-ink-900">Твоя экономия за 5 лет</p>
+                <p className="mt-1 font-semibold text-ink-900">Экономия за 5 лет</p>
                 <div className="mt-3 grid grid-cols-2 gap-3 text-center">
                   <div className="rounded-xl bg-ink-900/5 p-3">
                     <p className="text-xs text-ink-900/50">Текущий способ, 5 лет</p>
@@ -506,8 +566,10 @@ export default function QuizApp() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-3 text-center font-semibold text-ink-900">
-                  Экономия — ~{savings} сомони 🎉
+                <p className="mt-3 text-center">
+                  <span className="inline-block rounded-full bg-crimson-500 px-4 py-1.5 text-sm font-bold text-sand-50">
+                    Экономия — ~{savings} сомони 🎉
+                  </span>
                 </p>
                 {method === 'shave' && (
                   <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">
@@ -517,63 +579,77 @@ export default function QuizApp() {
                   </p>
                 )}
               </div>
-            ) : spend5y !== null ? (
-              <div className="rounded-xl2 bg-white/70 p-5">
-                <p className="text-sm text-ink-900/70">
-                  На текущем способе за 5 лет уйдёт ~{spend5y} сомони — и волосы
-                  будут возвращаться снова. Курс решает вопрос надолго.
+            ) : method === 'shave' ? (
+              <div className="rounded-xl2 border-2 border-crimson-500/20 bg-crimson-500/5 p-5">
+                <p className="text-xs uppercase tracking-wide text-crimson-500/80">
+                  Твоя выгода
                 </p>
-                {method === 'shave' && (
-                  <p className="mt-3 text-sm text-ink-900/70 leading-relaxed">
-                    И это только деньги. Вместе с бритвой уходят порезы,
-                    раздражение и вросшие волосы — кожа перестаёт жить в режиме
-                    постоянного стресса.
-                  </p>
-                )}
+                <p className="mt-1 font-semibold text-ink-900">Что уходит вместе с бритвой</p>
+                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
+                  Порезы, раздражение и вросшие волосы — кожа перестаёт жить в
+                  режиме постоянного стресса, а «побриться перед выходом»
+                  исчезает из списка дел насовсем.
+                </p>
               </div>
-            ) : null}
+            ) : method === 'sugaring' ? (
+              <div className="rounded-xl2 border-2 border-crimson-500/20 bg-crimson-500/5 p-5">
+                <p className="text-xs uppercase tracking-wide text-crimson-500/80">
+                  Твоя выгода
+                </p>
+                <p className="mt-1 font-semibold text-ink-900">Без боли по расписанию</p>
+                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
+                  Больше не нужно отращивать волосы между визитами и терпеть
+                  боль каждый месяц — после курса кожа гладкая сама по себе.
+                </p>
+              </div>
+            ) : method === 'cream' ? (
+              <div className="rounded-xl2 border-2 border-crimson-500/20 bg-crimson-500/5 p-5">
+                <p className="text-xs uppercase tracking-wide text-crimson-500/80">
+                  Твоя выгода
+                </p>
+                <p className="mt-1 font-semibold text-ink-900">Без запаха и раздражения</p>
+                <p className="mt-1.5 text-sm text-ink-900/70 leading-relaxed">
+                  Никаких резких запахов, риска раздражения и повторов каждую
+                  неделю — курс закрывает вопрос системно.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-xl2 border-2 border-crimson-500/20 bg-crimson-500/5 p-5">
+                <p className="text-xs uppercase tracking-wide text-crimson-500/80">
+                  Твоя выгода
+                </p>
+                <p className="mt-1 font-semibold text-ink-900">Твоё время тоже ресурс</p>
+                <p className="mt-1.5 text-sm text-ink-900/70">
+                  ~15 минут в неделю на удаление волос × 5 лет = 65 часов твоей
+                  жизни. Курс освобождает их насовсем.
+                </p>
+              </div>
+            )}
 
-            {/* 5. CTA */}
-            <div className="rounded-xl2 bg-white/70 p-5">
-              <p className="font-semibold text-ink-900">
-                Начни с первого визита по акции — {plan.promoPrice} сомони
+            {/* Доказательства */}
+            <div className="rounded-xl2 bg-sand-100 border-l-4 border-amber-400/80 p-5">
+              <p className="text-sm font-semibold text-ink-900">
+                ⭐ Отзывы наших клиенток
+              </p>
+              <p className="mt-2 text-sm text-ink-900/70 italic leading-relaxed">
+                «Процедура прошла очень комфортно. Всё было подробно объяснено,
+                а во время процедуры я чувствовала себя спокойно» — Шохона,
+                Душанбе
               </p>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`}
+                href="https://laserstella.com/otzyvy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 block w-full text-center rounded-full bg-crimson-500 py-3.5 text-sm font-semibold text-sand-50 hover:bg-crimson-600 transition-colors"
-                onClick={() => track('quiz_cta_whatsapp')}
+                className="mt-2 inline-block text-xs font-medium text-crimson-500 hover:underline"
               >
-                Записаться в WhatsApp
+                Читать все отзывы →
               </a>
-              <a
-                href={
-                  city === 'Худжанд' ? ALTEGIO_KHUJAND : 'https://laserstella.com/#zapis'
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 block w-full text-center rounded-full border border-crimson-500/40 py-3.5 text-sm font-semibold text-crimson-500 hover:bg-crimson-500 hover:text-sand-50 transition-colors"
-                onClick={() => track('quiz_cta_online')}
-              >
-                Записаться онлайн
-              </a>
-              <p className="mt-2 text-center text-xs text-ink-900/45">
-                Сообщение с твоим планом уже подставится — просто отправь его
-              </p>
             </div>
 
-            {/* 6. Доверие */}
-            <div className="rounded-xl2 bg-white/70 p-5 text-center">
-              <p className="text-xs text-ink-900/50">
-                4 студии в Таджикистане · сертифицированные мастера · трёхволновой
-                лазер ADSS FG2000B
-              </p>
-              <p className="mt-3 text-sm text-ink-900/70 italic leading-relaxed">
-                «Процедура прошла очень комфортно. Всё было подробно объяснено, а
-                во время процедуры я чувствовала себя спокойно» — Шохона, Душанбе
-              </p>
-            </div>
+            <p className="text-center text-xs text-ink-900/45">
+              4 студии в Таджикистане · сертифицированные мастера · трёхволновой
+              лазер ADSS FG2000B
+            </p>
           </div>
         )}
       </div>

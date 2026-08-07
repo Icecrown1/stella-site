@@ -35,6 +35,12 @@ const ZONE_CLASS: Record<Exclude<ZoneId, 'vse_telo'>, 'S' | 'M' | 'L' | 'XL'> = 
   nogi: 'XL'
 };
 
+// Разовая цена зоны (без абонемента) — для зачёркнутой «обычной» цены
+const ZONE_SINGLE: Record<City, Record<'S' | 'M' | 'L' | 'XL', number>> = {
+  Душанбе: { S: 75, M: 160, L: 205, XL: 265 },
+  Худжанд: { S: 60, M: 120, L: 170, XL: 200 }
+};
+
 // Цена абонемента зоны на 9 сеансов (итого за курс)
 const ZONE_COURSE9_TOTAL: Record<City, Record<'S' | 'M' | 'L' | 'XL', number>> = {
   Душанбе: { S: 450, M: 990, L: 1260, XL: 1665 },
@@ -47,6 +53,7 @@ type ComplexDef = {
   title: string;
   zones: ZoneId[]; // точное соответствие набору из квиза
   promo: number; // акция первого визита
+  single: Record<City, number>; // разовая цена комплекса без абонемента
   perProc9: Record<City, number>;
   total9: Record<City, number>;
 };
@@ -57,6 +64,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №1 «Подмышки + бикини»',
     zones: ['podmyshki', 'bikini'],
     promo: 100,
+    single: { Душанбе: 350, Худжанд: 260 },
     perProc9: { Душанбе: 245, Худжанд: 182 },
     total9: { Душанбе: 2205, Худжанд: 1640 }
   },
@@ -65,6 +73,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №2 «Подмышки + бикини + голени»',
     zones: ['podmyshki', 'bikini', 'goleni'],
     promo: 150,
+    single: { Душанбе: 430, Худжанд: 310 },
     perProc9: { Душанбе: 300, Худжанд: 217 },
     total9: { Душанбе: 2700, Худжанд: 1950 }
   },
@@ -73,6 +82,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №3 «Подмышки + бикини + ноги полностью»',
     zones: ['podmyshki', 'bikini', 'nogi'],
     promo: 200,
+    single: { Душанбе: 550, Худжанд: 350 },
     perProc9: { Душанбе: 385, Худжанд: 246 },
     total9: { Душанбе: 3465, Худжанд: 2210 }
   },
@@ -81,6 +91,7 @@ const COMPLEXES: ComplexDef[] = [
     title: 'Комплекс №5 «Подмышки + бикини + ноги + руки»',
     zones: ['podmyshki', 'bikini', 'nogi', 'ruki'],
     promo: 300,
+    single: { Душанбе: 725, Худжанд: 470 },
     perProc9: { Душанбе: 505, Худжанд: 329 },
     total9: { Душанбе: 4545, Худжанд: 2960 }
   }
@@ -89,6 +100,7 @@ const COMPLEXES: ComplexDef[] = [
 const VSE_TELO = {
   title: 'Комплекс №6 «Всё тело»',
   promo: 350,
+  single: { Душанбе: 820, Худжанд: 580 } as Record<City, number>,
   perProc9: { Душанбе: 570, Худжанд: 405 } as Record<City, number>,
   total9: { Душанбе: 5130, Худжанд: 3650 } as Record<City, number>
 };
@@ -101,6 +113,7 @@ function zonePromo(zone: ZoneId): number {
 export type Plan = {
   title: string;
   promoPrice: number;
+  regularPrice: number; // разовая цена того же визита без акции
   course9PerProc: number;
   course9Total: number;
 };
@@ -114,6 +127,7 @@ export function buildPlan(selected: ZoneId[], city: City): Plan {
     return {
       title: VSE_TELO.title,
       promoPrice: VSE_TELO.promo,
+      regularPrice: VSE_TELO.single[city],
       course9PerProc: VSE_TELO.perProc9[city],
       course9Total: VSE_TELO.total9[city]
     };
@@ -127,6 +141,7 @@ export function buildPlan(selected: ZoneId[], city: City): Plan {
     return {
       title: match.title,
       promoPrice: match.promo,
+      regularPrice: match.single[city],
       course9PerProc: match.perProc9[city],
       course9Total: match.total9[city]
     };
@@ -140,6 +155,7 @@ export function buildPlan(selected: ZoneId[], city: City): Plan {
     return {
       title: ZONES.find((z) => z.id === zone)?.label ?? 'Одна зона',
       promoPrice: zonePromo(zone),
+      regularPrice: ZONE_SINGLE[city][cls],
       course9PerProc: Math.round(total / 9),
       course9Total: total
     };
@@ -151,9 +167,14 @@ export function buildPlan(selected: ZoneId[], city: City): Plan {
     return sum + ZONE_COURSE9_TOTAL[city][cls];
   }, 0);
   const promo = real.reduce((sum, z) => sum + zonePromo(z), 0);
+  const regular = real.reduce((sum, z) => {
+    const cls = ZONE_CLASS[z as Exclude<ZoneId, 'vse_telo'>];
+    return sum + ZONE_SINGLE[city][cls];
+  }, 0);
   return {
     title: 'Твой набор зон',
     promoPrice: promo,
+    regularPrice: regular,
     course9PerProc: Math.round(total / 9),
     course9Total: total
   };

@@ -440,11 +440,21 @@ export default function QuizApp() {
                 {name
                   ? `${name.trim().charAt(0).toUpperCase()}${name.trim().slice(1)}, тебе`
                   : 'Тебе'}{' '}
-                подойдёт {plan.title}
+                подойдёт{' '}
+                {plan.title === 'Твой набор зон'
+                  ? `комплекс «${zoneLabels}»`
+                  : plan.title}
               </h2>
               <p className="mt-2 text-sm text-ink-900/60">
-                {zones.map((z) => ZONES.find((x) => x.id === z)?.label).join(', ')}
-                {' · '}обычно 6–9 процедур с интервалом ~месяц
+                {plan.title !== 'Твой набор зон' && (
+                  <>
+                    {zones
+                      .map((z) => ZONES.find((x) => x.id === z)?.label)
+                      .join(', ')}
+                    {' · '}
+                  </>
+                )}
+                обычно 6–9 процедур с интервалом ~месяц
               </p>
               {barrier === 'pain' && (
                 <p className="mt-2 text-sm text-ink-900/70">

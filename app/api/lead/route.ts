@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 
 // Простой rate limit в памяти процесса: до 5 заявок в час с одного IP.
-// На autoscale-инстансах память не разделяется между репликами — это
-// осознанный компромисс (мягкая защита без внешних зависимостей).
 const hits = new Map<string, number[]>();
 
 function rateLimited(ip: string): boolean {
@@ -48,8 +46,8 @@ export async function POST(req: Request) {
     `Барьер: ${body.barrier}`,
     `Кожа/волосы: ${body.skin}`,
     `Рекомендовано: ${body.plan}`,
-    body.course9PerProc ? `Курс 9: ${body.course9PerProc} с./процедура` : 'Курс: расчёт мастером',
-    body.savings5y ? `Экономия 5 лет: ~${body.savings5y} с.` : null,
+    body.course9PerProc ? `Курс 9: ${body.course9PerProc}/процедура` : 'Курс: расчёт мастером',
+    body.savings5y ? `Экономия 5 лет: ~${body.savings5y}` : null,
     Object.keys(body.utm ?? {}).length
       ? `UTM: ${Object.entries(body.utm)
           .map(([k, v]) => `${k}=${v}`)
@@ -59,37 +57,48 @@ export async function POST(req: Request) {
 
   const text = lines.join('\n');
 
-  // 1) Telegram — всегда (тот же бот, что у формы записи).
-  // Заявки из Кыргызстана (+996) уходят в отдельный чат TELEGRAM_CHAT_ID_KG;
-  // если он не задан в Secrets — падают в основной, чтобы ничего не терялось.
+  // Telegram. Заявки из Кыргызстана (+996) — в TELEGRAM_CHAT_ID_KG.
+  // Страховка двухуровневая: секрет не задан ИЛИ отправка в KG-чат не прошла
+  // (неверный ID, бот не в группе) — заявка уходит в основной чат с пометкой.
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
   const isKg = phone.startsWith('+996');
-  const tgChat = isKg
-    ? process.env.TELEGRAM_CHAT_ID_KG ?? process.env.TELEGRAM_CHAT_ID
-    : process.env.TELEGRAM_CHAT_ID;
-  let tgOk = false;
-  if (tgToken && tgChat) {
+  const mainChat = process.env.TELEGRAM_CHAT_ID;
+  const kgChat = process.env.TELEGRAM_CHAT_ID_KG;
+
+  async function sendTg(chatId: string, msg: string): Promise<boolean> {
     try {
       const res = await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: tgChat, text })
+        body: JSON.stringify({ chat_id: chatId, text: msg })
       });
-      tgOk = res.ok;
+      return res.ok;
     } catch {
-      tgOk = false;
+      return false;
     }
   }
 
-  // 2) amoCRM — если настроены секреты AMO_DOMAIN и AMO_TOKEN
-  const amoDomain = process.env.AMO_DOMAIN; // например: stella.amocrm.ru
+  let tgOk = false;
+  if (tgToken) {
+    if (isKg && kgChat) {
+      tgOk = await sendTg(kgChat, text);
+      if (!tgOk && mainChat) {
+        tgOk = await sendTg(mainChat, `⚠️ KG-чат недоступен, заявка переслана сюда:\n\n${text}`);
+      }
+    } else if (mainChat) {
+      tgOk = await sendTg(mainChat, text);
+    }
+  }
+
+  // amoCRM — если настроены секреты AMO_DOMAIN и AMO_TOKEN
+  const amoDomain = process.env.AMO_DOMAIN;
   const amoToken = process.env.AMO_TOKEN;
   let amoOk = false;
   if (amoDomain && amoToken) {
     const tags = [
       'ig_kviz',
-      'tj',
-      body.city === 'Худжанд' ? 'khujand' : 'dushanbe',
+      isKg ? 'kg' : 'tj',
+      body.city ? String(body.city).toLowerCase() : null,
       body?.utm?.utm_source ? `utm_${body.utm.utm_source}` : null
     ].filter(Boolean);
 
@@ -127,16 +136,13 @@ export async function POST(req: Request) {
           const created = await res.json();
           const leadId = created?.[0]?.id;
           if (leadId) {
-            // Все ответы — примечанием к сделке
             await fetch(`https://${amoDomain}/api/v4/leads/${leadId}/notes`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${amoToken}`
               },
-              body: JSON.stringify([
-                { note_type: 'common', params: { text } }
-              ])
+              body: JSON.stringify([{ note_type: 'common', params: { text } }])
             });
           }
           amoOk = true;

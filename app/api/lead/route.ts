@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   const lines = [
     '🧮 Заявка из квиза «План гладкости»',
     `Имя: ${body.name}`,
-    `Телефон: ${phone}${body.whatsappOk ? ' (WhatsApp ок)' : ''}`,
+    `Телефон: ${phone.replace(' ', '')}${body.whatsappOk ? ' (WhatsApp ок)' : ''}`,
     `Город: ${body.city}`,
     `Зоны: ${(body.zones ?? []).join(', ')}`,
     `Сейчас удаляет: ${body.method} · ${body.freq}`,

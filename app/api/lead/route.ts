@@ -129,11 +129,13 @@ export async function POST(req: Request) {
     }
   }
 
-  // amoCRM — если настроены секреты AMO_DOMAIN и AMO_TOKEN
+  // amoCRM — если настроены секреты AMO_DOMAIN и AMO_TOKEN.
+  // ВАЖНО: в amo уходят ТОЛЬКО заявки Кыргызстана (+996) — решение владельца.
+  // Telegram при этом получает все заявки обеих стран, как и раньше.
   const amoDomain = process.env.AMO_DOMAIN;
   const amoToken = process.env.AMO_TOKEN;
   let amoOk = false;
-  if (amoDomain && amoToken) {
+  if (isKg && amoDomain && amoToken) {
     const tags = [
       'ig_kviz',
       isKg ? 'kg' : 'tj',

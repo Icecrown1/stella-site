@@ -13,6 +13,45 @@ function rateLimited(ip: string): boolean {
   return false;
 }
 
+// Целевая воронка и этап для сделок из квизов (поиск по названию,
+// регистр и «ё/е» не важны). ID кешируются на время жизни процесса.
+const AMO_PIPELINE_NAME = 'первичный прием';
+const AMO_STATUS_NAME = 'входящая заявка';
+
+let amoTargetCache: { pipelineId: number; statusId: number } | null = null;
+
+function normName(s: string): string {
+  return s.toLowerCase().replace(/ё/g, 'е').trim();
+}
+
+async function resolveAmoTarget(
+  domain: string,
+  token: string
+): Promise<{ pipelineId: number; statusId: number } | null> {
+  if (amoTargetCache) return amoTargetCache;
+  try {
+    const res = await fetch(`https://${domain}/api/v4/leads/pipelines`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const pipelines = data?._embedded?.pipelines ?? [];
+    const pipeline = pipelines.find(
+      (p: any) => normName(String(p.name ?? '')) === AMO_PIPELINE_NAME
+    );
+    if (!pipeline) return null;
+    const statuses = pipeline?._embedded?.statuses ?? [];
+    const status = statuses.find(
+      (s: any) => normName(String(s.name ?? '')) === AMO_STATUS_NAME
+    );
+    if (!status) return null;
+    amoTargetCache = { pipelineId: pipeline.id, statusId: status.id };
+    return amoTargetCache;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   let body: any;
   try {
@@ -102,9 +141,15 @@ export async function POST(req: Request) {
       body?.utm?.utm_source ? `utm_${body.utm.utm_source}` : null
     ].filter(Boolean);
 
+    const target = await resolveAmoTarget(amoDomain, amoToken);
+
     const payload = [
       {
         name: `Квиз: ${body.name} (${body.plan})`,
+        ...(target && {
+          pipeline_id: target.pipelineId,
+          status_id: target.statusId
+        }),
         _embedded: {
           tags: (tags as string[]).map((t) => ({ name: t })),
           contacts: [

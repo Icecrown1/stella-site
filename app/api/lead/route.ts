@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   }
 
   const lines = [
-    '🧮 Заявка из квиза «План гладкости»',
+    `🧮 ${body.source ?? 'Заявка из квиза «План гладкости»'}`,
     `Имя: ${body.name}`,
     `Телефон: ${phone.replace(' ', '')}${body.whatsappOk ? ' (WhatsApp ок)' : ''}`,
     `Город: ${body.city}`,

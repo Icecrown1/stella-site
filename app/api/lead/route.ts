@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   }
 
   const phone = String(body.phone ?? '');
-  if (!/^\+99[26] \d{9}$/.test(phone)) {
+  if (!/^\+(?:99[268] \d{9}|7 \d{10})$/.test(phone)) {
     return NextResponse.json({ ok: false, error: 'bad_phone' }, { status: 400 });
   }
 
@@ -100,7 +100,10 @@ export async function POST(req: Request) {
   // Страховка двухуровневая: секрет не задан ИЛИ отправка в KG-чат не прошла
   // (неверный ID, бот не в группе) — заявка уходит в основной чат с пометкой.
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
-  const isKg = phone.startsWith('+996');
+  const isKg =
+    body.country === 'kg' ||
+    ['Бишкек', 'Ош'].includes(String(body.city ?? '')) ||
+    phone.startsWith('+996');
   const mainChat = process.env.TELEGRAM_CHAT_ID;
   const kgChat = process.env.TELEGRAM_CHAT_ID_KG;
 

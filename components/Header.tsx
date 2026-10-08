@@ -3,6 +3,12 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, Menu, MessageCircle, X } from 'lucide-react';
 import { ZONES } from '@/lib/zones';
+import { REJUVENATION_MIN_PRICE, WHITENING_MIN_PRICE } from '@/lib/procedures';
+
+const NEW_PROCEDURES = [
+  { name: 'Лазерное отбеливание', href: '/otbelivanie', price: `от ${WHITENING_MIN_PRICE} сомони` },
+  { name: 'Лазерное омоложение', href: '/omolozhenie', price: `от ${REJUVENATION_MIN_PRICE} сомони` }
+];
 
 const NAV_ITEMS = [
   { label: 'Цены', href: '/#tseny' },
@@ -66,7 +72,7 @@ export default function Header() {
               />
             </a>
 
-            <div className="absolute left-0 top-full w-56 pt-2 hidden group-hover:block">
+            <div className="absolute left-0 top-full w-64 pt-2 hidden group-hover:block">
               <div className="rounded-xl2 bg-sand-50 border border-ink-900/10 shadow-lg py-2 overflow-hidden">
                 {ZONES.map((zone) => (
                   <a
@@ -84,6 +90,20 @@ export default function Header() {
                 >
                   Комплексы зон
                 </a>
+                <div className="border-t border-ink-900/10 my-1" />
+                <p className="px-4 pt-2 pb-1 text-[11px] uppercase tracking-wide text-ink-900/40">
+                  Новые процедуры
+                </p>
+                {NEW_PROCEDURES.map((p) => (
+                  <a
+                    key={p.href}
+                    href={p.href}
+                    className="flex items-center justify-between px-4 py-2.5 text-sm text-ink-900/80 hover:bg-sand-100 hover:text-crimson-500 transition-colors"
+                  >
+                    <span>{p.name}</span>
+                    <span className="text-xs text-ink-900/40">{p.price}</span>
+                  </a>
+                ))}
                 <div className="border-t border-ink-900/10 my-1" />
                 <a
                   href="/uslugi"
@@ -196,6 +216,17 @@ export default function Header() {
                   >
                     Комплексы зон
                   </a>
+                  {NEW_PROCEDURES.map((p) => (
+                    <a
+                      key={p.href}
+                      href={p.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center justify-between py-3 text-sm text-ink-900/70"
+                    >
+                      <span>{p.name}</span>
+                      <span className="text-xs text-ink-900/40">{p.price}</span>
+                    </a>
+                  ))}
                   <a
                     href="/uslugi"
                     onClick={() => setMobileOpen(false)}

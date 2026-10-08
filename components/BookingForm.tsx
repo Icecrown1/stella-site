@@ -176,6 +176,9 @@ export default function BookingForm({ defaultZone }: { defaultZone?: string }) {
                 <option>Подмышки</option>
                 <option>Ноги полностью</option>
                 <option>Лицо</option>
+                <option>Лазерное отбеливание</option>
+                <option>Анти-акне</option>
+                <option>Лазерное омоложение</option>
                 <option>Другое / уточню у администратора</option>
               </select>
             </div>

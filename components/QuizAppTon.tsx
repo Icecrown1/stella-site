@@ -9,6 +9,12 @@ import {
 
 const WHATSAPP_NUMBER = '992977607711';
 
+// Коды стран для номера клиентки: у части аудитории симки соседних стран
+const COUNTRY_CODES = [
+  { code: '+992', country: 'Таджикистан', digits: 9, placeholder: '93 364 0290' },
+  { code: '+7', country: 'Россия / Казахстан', digits: 10, placeholder: '900 123 4567' }
+];
+
 type Duration = 'recent' | 'year' | 'always';
 type Tried = 'creams' | 'home' | 'scrubs' | 'nothing';
 type Barrier = 'doubt' | 'burn' | 'shy' | 'price' | 'none';
@@ -53,6 +59,9 @@ export default function QuizAppTon() {
   const [city, setCity] = useState<'Душанбе' | 'Худжанд' | null>(null);
   const [name, setName] = useState('');
   const [phoneDigits, setPhoneDigits] = useState('');
+  const [countryCode, setCountryCode] = useState(COUNTRY_CODES[0].code);
+  const selectedCode =
+    COUNTRY_CODES.find((c) => c.code === countryCode) ?? COUNTRY_CODES[0];
   const [waOk, setWaOk] = useState(true);
   const [hp, setHp] = useState('');
   const [sending, setSending] = useState(false);
@@ -92,7 +101,7 @@ export default function QuizAppTon() {
       : null;
 
   const plan = useMemo(() => buildTonePlan(zones), [zones]);
-  const phoneComplete = phoneDigits.length === 9;
+  const phoneComplete = phoneDigits.length === selectedCode.digits;
 
   const zoneLabels = zones
     .map((z) => TONE_ZONES.find((x) => x.id === z)?.label)
@@ -123,8 +132,9 @@ export default function QuizAppTon() {
 
     const payload = {
       source: 'Заявка из квиза «Ровный тон» (осветление)',
+      country: 'tj',
       name: name.trim(),
-      phone: `+992 ${phoneDigits}`,
+      phone: `${countryCode} ${phoneDigits}`,
       whatsappOk: waOk,
       zones: zones.map((z) => TONE_ZONES.find((x) => x.id === z)?.label),
       method: TRIED.find((t) => t.id === tried)?.label,
@@ -333,22 +343,38 @@ export default function QuizAppTon() {
                   Телефон / WhatsApp
                 </label>
                 <div className="mt-1.5 flex gap-2">
-                  <span className="shrink-0 rounded-lg border border-ink-900/15 bg-white/70 px-3 py-3.5 text-[15px] text-ink-900/70">
-                    +992
-                  </span>
+                  <select
+                    aria-label="Код страны"
+                    value={countryCode}
+                    onChange={(e) => {
+                      setCountryCode(e.target.value);
+                      setPhoneDigits('');
+                    }}
+                    className="shrink-0 rounded-lg border border-ink-900/15 bg-white/70 px-3 py-3.5 text-[15px] text-ink-900 focus:outline-none focus:ring-2 focus:ring-crimson-500"
+                  >
+                    {COUNTRY_CODES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.code}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     id="q-phone"
                     type="tel"
                     inputMode="numeric"
                     value={phoneDigits}
                     onChange={(e) =>
-                      setPhoneDigits(e.target.value.replace(/\D/g, '').slice(0, 9))
+                      setPhoneDigits(
+                        e.target.value.replace(/\D/g, '').slice(0, selectedCode.digits)
+                      )
                     }
-                    placeholder="93 364 0290"
+                    placeholder={selectedCode.placeholder}
                     className="w-full rounded-lg border border-ink-900/15 bg-white/70 px-4 py-3.5 text-[15px] focus:outline-none focus:ring-2 focus:ring-crimson-500"
                   />
                 </div>
-                <p className="mt-1 text-xs text-ink-900/40">{phoneDigits.length}/9 цифр</p>
+                <p className="mt-1 text-xs text-ink-900/40">
+                  {selectedCode.country} · {phoneDigits.length}/{selectedCode.digits} цифр
+                </p>
               </div>
               <input
                 type="text"
@@ -405,9 +431,9 @@ export default function QuizAppTon() {
               )}
               {barrier === 'burn' && (
                 <p className="mt-2 text-sm text-ink-900/70">
-                  Работаем на мягких профессиональных составах — арбутин и
-                  транексамовая кислота, без агрессивных кислот. Параметры под
-                  твой тип кожи + тест-зона на первом визите.
+                  Работаем на профессиональных депигментирующих составах
+                  Likoberon. Параметры лазера мастер подбирает под твой тип кожи,
+                  а на первом визите делает тест-зону.
                 </p>
               )}
               {barrier === 'shy' && (
@@ -518,16 +544,22 @@ export default function QuizAppTon() {
               </p>
               <p className="mt-2 text-sm text-ink-900/70 leading-relaxed">
                 4 студии в Душанбе и Худжанде · сертифицированные мастера ·
-                профессиональные составы Depiltouch
+                профессиональные составы Likoberon
               </p>
-              <a
-                href="https://laserstella.com/otzyvy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-block text-xs font-medium text-crimson-500 hover:underline"
-              >
-                Отзывы о студиях STELLA →
-              </a>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                <a
+                  href="/otbelivanie"
+                  className="text-xs font-medium text-crimson-500 hover:underline"
+                >
+                  Как проходит процедура →
+                </a>
+                <a
+                  href="/otzyvy"
+                  className="text-xs font-medium text-crimson-500 hover:underline"
+                >
+                  Отзывы о студиях STELLA →
+                </a>
+              </div>
             </div>
           </div>
         )}

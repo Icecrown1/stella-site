@@ -68,6 +68,8 @@ export default function Footer() {
           <p className="text-sm font-semibold text-sand-50 mb-4">Меню</p>
           <ul className="space-y-2 text-sm mb-6">
             <li><a href="/uslugi" className="hover:text-sand-50">Услуги</a></li>
+            <li><a href="/otbelivanie" className="hover:text-sand-50">Лазерное отбеливание</a></li>
+            <li><a href="/omolozhenie" className="hover:text-sand-50">Лазерное омоложение</a></li>
             <li><a href="/#tseny" className="hover:text-sand-50">Курсы и цены</a></li>
             <li><a href="/#kosmetologi" className="hover:text-sand-50">Косметологи</a></li>
             <li><a href="/otzyvy" className="hover:text-sand-50">Отзывы</a></li>

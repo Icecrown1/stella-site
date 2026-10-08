@@ -10,6 +10,14 @@ import {
   FREQ_OPTIONS
 } from '@/lib/quiz-pricing-kg';
 
+// Коды стран для номера клиентки: аудитория КГ часто с симками соседей
+const COUNTRY_CODES = [
+  { code: '+996', country: 'Кыргызстан', digits: 9, placeholder: '700 123 456' },
+  { code: '+7', country: 'Россия / Казахстан', digits: 10, placeholder: '900 123 4567' },
+  { code: '+998', country: 'Узбекистан', digits: 9, placeholder: '90 123 4567' },
+  { code: '+992', country: 'Таджикистан', digits: 9, placeholder: '93 364 0290' }
+];
+
 const WHATSAPP_BY_CITY: Record<CityKg, string> = {
   Бишкек: '996704109106',
   Ош: '996553109106'
@@ -63,6 +71,9 @@ export default function QuizAppKg() {
   const [city, setCity] = useState<CityKg | null>(null);
   const [name, setName] = useState('');
   const [phoneDigits, setPhoneDigits] = useState('');
+  const [countryCode, setCountryCode] = useState(COUNTRY_CODES[0].code);
+  const selectedCode =
+    COUNTRY_CODES.find((c) => c.code === countryCode) ?? COUNTRY_CODES[0];
   const [waOk, setWaOk] = useState(true);
   const [hp, setHp] = useState(''); // honeypot
   const [sending, setSending] = useState(false);
@@ -114,7 +125,7 @@ export default function QuizAppKg() {
   const course9Total = plan.course9Total;
   const savings = spend5y !== null ? spend5y - course9Total : null;
 
-  const phoneComplete = phoneDigits.length === 9;
+  const phoneComplete = phoneDigits.length === selectedCode.digits;
 
   const go = (n: number) => {
     setStep(n);
@@ -134,7 +145,8 @@ export default function QuizAppKg() {
 
     const payload = {
       name: name.trim(),
-      phone: `+996 ${phoneDigits}`,
+      country: 'kg',
+      phone: `${countryCode} ${phoneDigits}`,
       whatsappOk: waOk,
       zones: zones.map((z) => ZONES.find((x) => x.id === z)?.label),
       method: METHODS.find((m) => m.id === method)?.label,
@@ -384,22 +396,38 @@ export default function QuizAppKg() {
                   Телефон / WhatsApp
                 </label>
                 <div className="mt-1.5 flex gap-2">
-                  <span className="shrink-0 rounded-lg border border-ink-900/15 bg-white/70 px-3 py-3.5 text-[15px] text-ink-900/70">
-                    +996
-                  </span>
+                  <select
+                    aria-label="Код страны"
+                    value={countryCode}
+                    onChange={(e) => {
+                      setCountryCode(e.target.value);
+                      setPhoneDigits('');
+                    }}
+                    className="shrink-0 rounded-lg border border-ink-900/15 bg-white/70 px-3 py-3.5 text-[15px] text-ink-900 focus:outline-none focus:ring-2 focus:ring-crimson-500"
+                  >
+                    {COUNTRY_CODES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.code}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     id="q-phone"
                     type="tel"
                     inputMode="numeric"
                     value={phoneDigits}
                     onChange={(e) =>
-                      setPhoneDigits(e.target.value.replace(/\D/g, '').slice(0, 9))
+                      setPhoneDigits(
+                        e.target.value.replace(/\D/g, '').slice(0, selectedCode.digits)
+                      )
                     }
-                    placeholder="700 123 456"
+                    placeholder={selectedCode.placeholder}
                     className="w-full rounded-lg border border-ink-900/15 bg-white/70 px-4 py-3.5 text-[15px] focus:outline-none focus:ring-2 focus:ring-crimson-500"
                   />
                 </div>
-                <p className="mt-1 text-xs text-ink-900/40">{phoneDigits.length}/9 цифр</p>
+                <p className="mt-1 text-xs text-ink-900/40">
+                  {selectedCode.country} · {phoneDigits.length}/{selectedCode.digits} цифр
+                </p>
               </div>
               {/* honeypot — скрыт от людей */}
               <input

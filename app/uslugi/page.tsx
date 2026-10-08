@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ZONES } from '@/lib/zones';
+import { REJUVENATION_MIN_PRICE, WHITENING_MIN_PRICE } from '@/lib/procedures';
 
 const SITE_URL = 'https://laserstella.com';
 
@@ -77,6 +78,28 @@ export default function UslugiPage() {
               <p className="font-display font-semibold text-lg">Комплексы зон</p>
               <p className="text-sand-50/80 mt-1">от 260 сомони</p>
               <p className="text-sm text-sand-50/70 mt-2">Выгоднее, чем по одной</p>
+            </a>
+          </div>
+
+          <h2 className="mt-12 font-display font-bold text-xl text-ink-900 mb-4">
+            Новые процедуры
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <a
+              href="/otbelivanie"
+              className="rounded-xl2 bg-sand-100 p-6 hover:bg-sand-200 transition-colors"
+            >
+              <p className="font-display font-semibold text-lg text-ink-900">Лазерное отбеливание</p>
+              <p className="text-crimson-500 font-medium mt-1">от {WHITENING_MIN_PRICE} сомони</p>
+              <p className="text-sm text-ink-900/60 mt-2">Подмышки, бикини, колени, локти, лицо. Анти-акне.</p>
+            </a>
+            <a
+              href="/omolozhenie"
+              className="rounded-xl2 bg-sand-100 p-6 hover:bg-sand-200 transition-colors"
+            >
+              <p className="font-display font-semibold text-lg text-ink-900">Лазерное омоложение</p>
+              <p className="text-crimson-500 font-medium mt-1">от {REJUVENATION_MIN_PRICE} сомони</p>
+              <p className="text-sm text-ink-900/60 mt-2">Лицо, шея, декольте. Антикупероз.</p>
             </a>
           </div>
 

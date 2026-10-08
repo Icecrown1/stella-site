@@ -100,10 +100,14 @@ export async function POST(req: Request) {
   // Страховка двухуровневая: секрет не задан ИЛИ отправка в KG-чат не прошла
   // (неверный ID, бот не в группе) — заявка уходит в основной чат с пометкой.
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+  // Страна заявки: если квиз прислал явную метку country ('kg'/'tj') — она
+  // решающая. Город и код телефона — фолбэки для заявок без метки, чтобы
+  // кыргызская симка в таджикском квизе не увела заявку в KG-канал.
   const isKg =
-    body.country === 'kg' ||
-    ['Бишкек', 'Ош'].includes(String(body.city ?? '')) ||
-    phone.startsWith('+996');
+    body.country != null
+      ? body.country === 'kg'
+      : ['Бишкек', 'Ош'].includes(String(body.city ?? '')) ||
+        phone.startsWith('+996');
   const mainChat = process.env.TELEGRAM_CHAT_ID;
   const kgChat = process.env.TELEGRAM_CHAT_ID_KG;
 

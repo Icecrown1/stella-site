@@ -60,6 +60,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...zonePages,
     {
+      url: `${SITE_URL}/otbelivanie`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/omolozhenie`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/uslugi/vsyo-telo`,
       lastModified: new Date(),
       changeFrequency: "monthly",

@@ -187,6 +187,22 @@ export default function StudioPage({ params }: { params: { slug: string } }) {
               <p className="text-sm text-ink-900/50 mt-3">{studio.landmark}</p>
             </div>
 
+            <div className="mt-6 rounded-xl2 border border-ink-900/10 p-6">
+              <h2 className="font-display font-semibold text-lg text-ink-900 mb-2">
+                В этой студии также
+              </h2>
+              <p className="text-sm text-ink-900/70 leading-relaxed">
+                <a href="/otbelivanie" className="text-crimson-500 hover:underline">
+                  Лазерное отбеливание
+                </a>{' '}
+                подмышек, бикини, коленей и лица, анти-акне и{' '}
+                <a href="/omolozhenie" className="text-crimson-500 hover:underline">
+                  лазерное омоложение
+                </a>{' '}
+                лица, шеи и декольте.
+              </p>
+            </div>
+
             {masters.length > 0 && (
               <div className="mt-12">
                 <h2 className="font-display font-bold text-xl text-ink-900 mb-5">

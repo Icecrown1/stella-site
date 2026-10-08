@@ -1,10 +1,18 @@
-// Конфиг цен квиза «Ровный тон» (лазерное осветление, Таджикистан).
-// Источник: прайс «Отбеливание & Anti-Acne» STELLA TJ (сомони).
-// ЕДИНСТВЕННОЕ место с ценами этого квиза — править тут.
+// Логика расчёта квиза «Ровный тон» (лазерное отбеливание, Таджикистан).
+// Сами цены живут в lib/procedures.ts — там же их берут страницы
+// /otbelivanie и /omolozhenie, поэтому прайс на сайте и в квизе не разойдётся.
+
+import {
+  WHITENING_CLASSES,
+  WHITENING_COMPLEXES,
+  WhiteningClass,
+  WhiteningComplexId
+} from '@/lib/procedures';
 
 export type ToneZoneId =
   | 'podmyshki'
   | 'bikini'
+  | 'bikini_deep'
   | 'koleni'
   | 'lokti'
   | 'bedra'
@@ -13,7 +21,8 @@ export type ToneZoneId =
 
 export const TONE_ZONES: { id: ToneZoneId; label: string }[] = [
   { id: 'podmyshki', label: 'Подмышки' },
-  { id: 'bikini', label: 'Бикини / интимная зона' },
+  { id: 'bikini', label: 'Классическое бикини' },
+  { id: 'bikini_deep', label: 'Глубокое бикини / интимная зона' },
   { id: 'koleni', label: 'Колени' },
   { id: 'lokti', label: 'Локти' },
   { id: 'bedra', label: 'Внутренняя поверхность бёдер' },
@@ -21,9 +30,10 @@ export const TONE_ZONES: { id: ToneZoneId; label: string }[] = [
   { id: 'spina', label: 'Спина' }
 ];
 
-// Класс зоны в прайсе отбеливания
-const ZONE_CLASS: Record<ToneZoneId, 'S' | 'M' | 'L' | 'XL'> = {
+// Класс зоны в прайсе: классическое бикини — S, глубокое — L
+const ZONE_CLASS: Record<ToneZoneId, WhiteningClass> = {
   bikini: 'S',
+  bikini_deep: 'L',
   lico: 'M',
   podmyshki: 'M',
   koleni: 'L',
@@ -32,52 +42,13 @@ const ZONE_CLASS: Record<ToneZoneId, 'S' | 'M' | 'L' | 'XL'> = {
   spina: 'XL'
 };
 
-// Разовая цена / курс 5 (за сеанс и итого) / акция первого визита
-const ZONE_PRICE: Record<
-  'S' | 'M' | 'L' | 'XL',
-  { single: number; per5: number; total5: number; promo: number }
-> = {
-  S: { single: 220, per5: 178, total5: 890, promo: 110 },
-  M: { single: 240, per5: 194, total5: 970, promo: 130 },
-  L: { single: 290, per5: 234, total5: 1170, promo: 140 },
-  XL: { single: 490, per5: 398, total5: 1990, promo: 170 }
+// Составы комплексов. В прайсе комплекс назван «бикини» без уточнения
+// глубины, поэтому и классическое, и глубокое бикини попадают в комплекс.
+const COMPLEX_ZONES: Record<WhiteningComplexId, ToneZoneId[]> = {
+  k1: ['podmyshki', 'bikini'],
+  k2: ['podmyshki', 'bikini', 'koleni'],
+  k3: ['podmyshki', 'bikini', 'koleni', 'lokti']
 };
-
-type ToneComplex = {
-  title: string;
-  zones: ToneZoneId[];
-  single: number;
-  per5: number;
-  total5: number;
-  promo: number;
-};
-
-const COMPLEXES: ToneComplex[] = [
-  {
-    title: 'Комплекс «Подмышки + бикини»',
-    zones: ['podmyshki', 'bikini'],
-    single: 390,
-    per5: 315,
-    total5: 1575,
-    promo: 160
-  },
-  {
-    title: 'Комплекс «Подмышки + бикини + колени»',
-    zones: ['podmyshki', 'bikini', 'koleni'],
-    single: 540,
-    per5: 437,
-    total5: 2185,
-    promo: 180
-  },
-  {
-    title: 'Комплекс «Подмышки + бикини + колени + локти»',
-    zones: ['podmyshki', 'bikini', 'koleni', 'lokti'],
-    single: 690,
-    per5: 558,
-    total5: 2790,
-    promo: 190
-  }
-];
 
 // Акция для индивидуальных наборов — по числу зон (сетка комплексов прайса;
 // для 4 зон прайс задаёт 190–200, берём нижнюю честную границу)
@@ -92,14 +63,23 @@ export type TonePlan = {
 };
 
 export function buildTonePlan(selected: ToneZoneId[]): TonePlan {
-  const set = new Set(selected);
-
-  const match = COMPLEXES.find(
-    (c) => c.zones.length === set.size && c.zones.every((z) => set.has(z))
+  // Для сравнения с комплексами глубокое бикини считаем просто «бикини»
+  const normalized = new Set<ToneZoneId>(
+    selected.map((z) => (z === 'bikini_deep' ? 'bikini' : z))
   );
+
+  // Оба варианта бикини сразу — не комплекс, считаем индивидуально
+  const bothBikini = selected.includes('bikini') && selected.includes('bikini_deep');
+
+  const match = bothBikini
+    ? undefined
+    : WHITENING_COMPLEXES.find((c) => {
+        const zones = COMPLEX_ZONES[c.id];
+        return zones.length === normalized.size && zones.every((z) => normalized.has(z));
+      });
   if (match) {
     return {
-      title: match.title,
+      title: `Комплекс «${match.title}»`,
       promoPrice: match.promo,
       regularPrice: match.single,
       per5: match.per5,
@@ -109,7 +89,7 @@ export function buildTonePlan(selected: ToneZoneId[]): TonePlan {
 
   if (selected.length === 1) {
     const zone = selected[0];
-    const p = ZONE_PRICE[ZONE_CLASS[zone]];
+    const p = WHITENING_CLASSES[ZONE_CLASS[zone]];
     return {
       title: TONE_ZONES.find((z) => z.id === zone)?.label ?? 'Одна зона',
       promoPrice: p.promo,
@@ -122,7 +102,7 @@ export function buildTonePlan(selected: ToneZoneId[]): TonePlan {
   // Индивидуальный набор: комплекс = сумма разовых −30%,
   // курс 5 = −19% от цены комплекса за сеанс (правила прайса)
   const singleSum = selected.reduce(
-    (sum, z) => sum + ZONE_PRICE[ZONE_CLASS[z]].single,
+    (sum, z) => sum + WHITENING_CLASSES[ZONE_CLASS[z]].single,
     0
   );
   const complexSingle = Math.round(singleSum * 0.7);

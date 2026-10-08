@@ -4,6 +4,7 @@ import PromoStrip from "@/components/PromoStrip";
 import Guarantee from "@/components/Guarantee";
 import Results from "@/components/Results";
 import Pricing from "@/components/Pricing";
+import NewProcedures from "@/components/NewProcedures";
 import Masters from "@/components/Masters";
 import Reviews from "@/components/Reviews";
 import FAQ from "@/components/FAQ";
@@ -215,6 +216,7 @@ export default function Home() {
         <Guarantee />
         <Results />
         <Pricing />
+        <NewProcedures />
         <Masters />
         <Reviews />
         <FAQ />
